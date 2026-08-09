@@ -8,7 +8,7 @@ import { formatPrice } from '../utils/currency';
 async function fetchLiveStats(placeName, placeLocation) {
   try {
     const query = encodeURIComponent(`${placeName} ${placeLocation || ''}`);
-    const res = await fetch(`http://localhost:5000/api/google/place?query=${query}`);
+    const res = await fetch(`/api/google/place?query=${query}`);
     if (!res.ok) throw new Error('API offline');
     const json = await res.json();
     return json.data;

@@ -192,7 +192,7 @@ app.get('/api/google/nearby', async (req, res) => {
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 RoamPulse AI Express Server running on port ${PORT}`);
     console.log(`   Database: ✅ Persistent Locality Storage active`);

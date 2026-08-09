@@ -6,7 +6,9 @@
 import fs from 'fs';
 import path from 'path';
 
-const DB_FILE = path.resolve(process.cwd(), 'prisma', 'dev.db.json');
+const DB_FILE = process.env.VERCEL
+  ? path.join('/tmp', 'dev.db.json')
+  : path.resolve(process.cwd(), 'prisma', 'dev.db.json');
 
 // Initial schema
 const INITIAL_DATA = {

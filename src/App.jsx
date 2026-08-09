@@ -81,7 +81,7 @@ export default function App() {
 
   const fetchDbItineraries = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/db/itineraries');
+      const res = await fetch('/api/db/itineraries');
       const json = await res.json();
       if (json?.data) {
         setDbItineraries(json.data);
@@ -145,7 +145,7 @@ export default function App() {
     setSearchQuery(queryText);
     setShowSearch(false);
     try {
-      const res = await fetch(`http://localhost:5000/api/google/place?query=${encodeURIComponent(queryText)}`);
+      const res = await fetch(`/api/google/place?query=${encodeURIComponent(queryText)}`);
       const json = await res.json();
       if (json?.data?.lat && json?.data?.lng) {
         const lat = json.data.lat;
@@ -162,7 +162,7 @@ export default function App() {
   // SQLite Persistence Save Handlers
   const handleSaveItinerary = async (plan) => {
     try {
-      await fetch('http://localhost:5000/api/db/itineraries', {
+      await fetch('/api/db/itineraries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -181,7 +181,7 @@ export default function App() {
 
   const handleCreateBooking = async (bookingData) => {
     try {
-      await fetch('http://localhost:5000/api/db/bookings', {
+      await fetch('/api/db/bookings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookingData)
