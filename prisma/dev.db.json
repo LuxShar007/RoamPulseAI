@@ -1,0 +1,692 @@
+{
+  "bookings": [
+    {
+      "id": "b-1786271155519",
+      "placeName": "Snooze House Navi Mumbai",
+      "location": "Snooze House Navi Mumbai, Parsik Hill Road, Seawoods East, Navi Mumbai, Thane Subdistrict, Thane, Maharashtra, 400706, India",
+      "dateRange": "Aug 12 - Aug 14, 2026",
+      "price": 2200,
+      "hygiene": 94,
+      "ticketId": "RP-443442-AI",
+      "createdAt": "2026-08-09T10:25:55.520Z"
+    },
+    {
+      "id": "b-1786271150976",
+      "placeName": "Snooze House Navi Mumbai",
+      "location": "Snooze House Navi Mumbai, Parsik Hill Road, Seawoods East, Navi Mumbai, Thane Subdistrict, Thane, Maharashtra, 400706, India",
+      "dateRange": "Aug 12 - Aug 14, 2026",
+      "price": 2200,
+      "hygiene": 94,
+      "ticketId": "RP-117486-AI",
+      "createdAt": "2026-08-09T10:25:50.976Z"
+    },
+    {
+      "id": "b-101",
+      "placeName": "ZenITH Luxury Eco Pods",
+      "location": "Navi Mumbai",
+      "dateRange": "Aug 12 - Aug 14, 2026",
+      "price": 1400,
+      "hygiene": 98,
+      "ticketId": "RP-884920-AI",
+      "createdAt": "2026-08-09T09:23:22.574Z"
+    }
+  ],
+  "savedPlaces": [
+    {
+      "id": "s-101",
+      "placeId": "osm-stay-1",
+      "placeName": "Palm Breeze Resort & Suites",
+      "category": "Stay",
+      "location": "Navi Mumbai",
+      "image": "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80",
+      "createdAt": "2026-08-09T09:23:22.575Z"
+    }
+  ],
+  "itineraries": [
+    {
+      "id": "i-1786271401154",
+      "locality": "Nerul West",
+      "days": 2,
+      "vibe": "PEACE",
+      "budget": "₹3,000 - ₹6,000",
+      "planJson": [
+        {
+          "day": 1,
+          "title": "Day 1: Locality Arrival & Heritage Explorer",
+          "overview": "Curated AI itinerary for Nerul West matching your PEACE vibe preference.",
+          "activities": [
+            {
+              "time": "08:30 AM",
+              "name": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "cost": "₹180",
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "name": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "cost": "Free",
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "name": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "cost": "₹140",
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "name": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "cost": "₹1,500/night",
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "name": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "cost": "₹450",
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Day 2: LocoGems Street Food & Tranquil Stays",
+          "overview": "Curated AI itinerary for Nerul West matching your PEACE vibe preference.",
+          "activities": [
+            {
+              "time": "08:30 AM",
+              "name": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "cost": "₹180",
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "name": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "cost": "Free",
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "name": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "cost": "₹140",
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "name": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "cost": "₹1,500/night",
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "name": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "cost": "₹450",
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-09T10:30:01.154Z"
+    },
+    {
+      "id": "i-1786270614909",
+      "locality": "Nerul West",
+      "days": 2,
+      "vibe": "PEACE",
+      "budget": "₹3,000 - ₹6,000",
+      "planJson": [
+        {
+          "day": 1,
+          "title": "Day 1: Locality Arrival & Heritage Explorer",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Day 2: LocoGems Street Food & Tranquil Stays",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-09T10:16:54.909Z"
+    },
+    {
+      "id": "i-1786270233787",
+      "locality": "Nerul West",
+      "days": 2,
+      "vibe": "PEACE",
+      "budget": "₹3,000 - ₹6,000",
+      "planJson": [
+        {
+          "day": 1,
+          "title": "Day 1: Locality Arrival & Heritage Explorer",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Day 2: LocoGems Street Food & Tranquil Stays",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-09T10:10:33.788Z"
+    },
+    {
+      "id": "i-1786268632774",
+      "locality": "Nerul West",
+      "days": 2,
+      "vibe": "PEACE",
+      "budget": "₹3,000 - ₹6,000",
+      "planJson": [
+        {
+          "day": 1,
+          "title": "Day 1: Locality Arrival & Heritage Explorer",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Day 2: LocoGems Street Food & Tranquil Stays",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-09T09:43:52.774Z"
+    },
+    {
+      "id": "i-1786268202347",
+      "locality": "Nerul West",
+      "days": 2,
+      "vibe": "PEACE",
+      "budget": "₹3,000 - ₹6,000",
+      "planJson": [
+        {
+          "day": 1,
+          "title": "Day 1: Locality Arrival & Heritage Explorer",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Day 2: LocoGems Street Food & Tranquil Stays",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Nerul West Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Nerul West Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Nerul West",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Nerul West",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-09T09:36:42.347Z"
+    },
+    {
+      "id": "i-1786267534727",
+      "locality": "Navi Mumbai",
+      "days": 2,
+      "vibe": "PEACE",
+      "budget": "₹3,000 - ₹6,000",
+      "planJson": [
+        {
+          "day": 1,
+          "title": "Day 1: Locality Arrival & Heritage Explorer",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Navi Mumbai Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Navi Mumbai Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Navi Mumbai",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Navi Mumbai",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        },
+        {
+          "day": 2,
+          "title": "Day 2: LocoGems Street Food & Tranquil Stays",
+          "timeline": [
+            {
+              "time": "08:30 AM",
+              "title": "Morning Fuel & Fresh Breakfast",
+              "spot": "Navi Mumbai Local Cafe & Dosa Hub",
+              "type": "Food",
+              "hygiene": 96,
+              "note": "Verified 100% glove-worn hygiene service & stainless preparation."
+            },
+            {
+              "time": "11:00 AM",
+              "title": "Locality Exploration & Sightseeing",
+              "spot": "Navi Mumbai Central Heritage Promenade",
+              "type": "Sightseeing",
+              "hygiene": 92,
+              "note": "24/7 CCTV monitored safety zone with public rest stops nearby."
+            },
+            {
+              "time": "01:30 PM",
+              "title": "Authentic Street Food (LocoGems Lunch)",
+              "spot": "Sharma Street Food Market Navi Mumbai",
+              "type": "LocoGem",
+              "hygiene": 95,
+              "note": "Google ⭐ 4.8 rated street food vendor. Fresh oil verified."
+            },
+            {
+              "time": "04:30 PM",
+              "title": "Afternoon Check-in & Rest Pulse",
+              "spot": "ZenITH Boutique Lodge & Suites",
+              "type": "Stay",
+              "hygiene": 98,
+              "note": "Soundproof acoustics, sanitized washroom, quiet index > 90%."
+            },
+            {
+              "time": "07:30 PM",
+              "title": "Evening Dining & Sunset Radar Walk",
+              "spot": "Coastal Spice Bistro Navi Mumbai",
+              "type": "Dining",
+              "hygiene": 94,
+              "note": "Outdoor seating with high safety index and verified clean restrooms."
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-09T09:25:34.727Z"
+    },
+    {
+      "id": "i-101",
+      "locality": "Navi Mumbai",
+      "days": 2,
+      "vibe": "PEACE",
+      "budget": "₹3,000 - ₹6,000",
+      "planJson": [
+        {
+          "day": 1,
+          "title": "Day 1: Arrival & LocoGems Exploration",
+          "timeline": [
+            {
+              "time": "09:00 AM",
+              "title": "Breakfast",
+              "spot": "Navi Mumbai Local Cafe"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-09T09:23:22.575Z"
+    }
+  ]
+}

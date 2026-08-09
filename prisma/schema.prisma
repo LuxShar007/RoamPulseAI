@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id               String       @id @default(uuid())
+  email            String       @unique
+  fullName         String
+  travelPreference String       @default("PEACE")
+  savedPlaces      SavedPlace[]
+  createdAt        DateTime     @default(now())
+}
+
+model Place {
+  id           String       @id @default(uuid())
+  name         String
+  category     String
+  location     String
+  latitude     Float
+  longitude    Float
+  price        Int
+  googleRating Float?
+  imageUrl     String
+  savedByUsers SavedPlace[]
+  createdAt    DateTime     @default(now())
+}
+
+model Booking {
+  id        String   @id @default(uuid())
+  placeName String
+  location  String
+  dateRange String
+  price     Int
+  hygiene   Int
+  ticketId  String   @unique
+  createdAt DateTime @default(now())
+}
+
+model SavedPlace {
+  id        String   @id @default(uuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  place     Place?   @relation(fields: [placeId], references: [id])
+  placeId   String
+  placeName String
+  category  String
+  location  String
+  image     String
+  createdAt DateTime @default(now())
+}
+
+model Itinerary {
+  id        String   @id @default(uuid())
+  locality  String
+  days      Int
+  vibe      String
+  budget    String
+  planJson  String
+  createdAt DateTime @default(now())
+}
