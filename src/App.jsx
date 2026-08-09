@@ -24,6 +24,7 @@ import OfflineMaps from './components/OfflineMaps';
 import SettingsPage from './components/SettingsPage';
 import Navigation from './components/Navigation';
 import NavigationPreview from './components/NavigationPreview';
+import LiveNavigationModal from './components/LiveNavigationModal';
 import ItineraryPlanner from './components/ItineraryPlanner';
 import BudgetAnalyticsView from './components/BudgetAnalyticsView';
 import IPhone17ProMaxFrame from './components/IPhone17ProMaxFrame';
@@ -74,6 +75,7 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showNavPreview, setShowNavPreview] = useState(false);
   const [showItineraryModal, setShowItineraryModal] = useState(false);
+  const [navTarget, setNavTarget] = useState(null);
 
   // ─── Fetch SQLite DB Saved Itineraries ──────────────────────────────────
 
@@ -210,7 +212,8 @@ export default function App() {
               stay={selectedStay}
               onBack={() => setSelectedStay(null)}
               onBook={() => setShowBooking(true)}
-              onNavigate={() => setShowNavPreview(true)}
+              onNavigate={() => setNavTarget(selectedStay)}
+              currency={currency}
             />
           </div>
 
@@ -260,6 +263,14 @@ export default function App() {
                 </div>
               </div>
             </div>
+          )}
+
+          {navTarget && (
+            <LiveNavigationModal
+              target={navTarget}
+              userPos={userPos}
+              onClose={() => setNavTarget(null)}
+            />
           )}
         </div>
       );
@@ -360,13 +371,15 @@ export default function App() {
                   locoGemsList={liveData.locogems}
                   diningList={liveData.dining}
                   loading={liveData.loading}
-                  onSelectFood={() => {}}
+                  onSelectFood={(item) => setNavTarget(item)}
+                  currency={currency}
                 />
               : <StaysCategoryFeed
                   staysList={liveData.stays}
                   loading={liveData.loading}
                   onSelectStay={setSelectedStay}
                   activeCategoryTab={activeCategory === 'stays' ? 'all' : 'all'}
+                  currency={currency}
                 />
             }
           </>
@@ -381,7 +394,7 @@ export default function App() {
             stays={liveData.stays}
             locogems={liveData.locogems}
             userCenter={userPos}
-            onNavigate={() => {}}
+            onNavigate={(item) => setNavTarget(item)}
           />
         );
       }
@@ -403,6 +416,7 @@ export default function App() {
             savedFood={liveData.locogems.slice(0, 2)}
             savedItineraries={dbItineraries}
             onSelectStay={setSelectedStay}
+            currency={currency}
           />
         );
       }
@@ -491,8 +505,8 @@ export default function App() {
                 </button>
               </div>
               <div className="sheet-body" style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: '24px' }}>
-                <BudgetAnalyticsView localityName={localityName} stays={liveData.stays} food={liveData.locogems} />
-                <BudgetOptimizer savingsSummary={mockData.savingsSummary} />
+                <BudgetAnalyticsView localityName={localityName} stays={liveData.stays} food={liveData.locogems} currency={currency} />
+                <BudgetOptimizer savingsSummary={mockData.savingsSummary} currency={currency} />
               </div>
             </div>
           </div>
@@ -515,6 +529,14 @@ export default function App() {
             localityName={localityName}
             onClose={() => setShowItineraryModal(false)}
             onSaveItinerary={handleSaveItinerary}
+          />
+        )}
+
+        {navTarget && (
+          <LiveNavigationModal
+            target={navTarget}
+            userPos={userPos}
+            onClose={() => setNavTarget(null)}
           />
         )}
       </div>

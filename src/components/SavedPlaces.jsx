@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Heart, Calendar, Sparkles, MapPin, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { Heart, Calendar, Sparkles, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { formatPrice } from '../utils/currency';
 
-export default function SavedPlaces({ savedStays = [], savedFood = [], savedItineraries = [], onSelectStay, onDeleteItinerary }) {
+export default function SavedPlaces({ savedStays = [], savedFood = [], savedItineraries = [], onSelectStay, currency = 'INR' }) {
   const [expandedItineraryId, setExpandedItineraryId] = useState(null);
 
   const toggleExpand = (id) => {
@@ -149,7 +150,9 @@ export default function SavedPlaces({ savedStays = [], savedFood = [], savedItin
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: '800', fontSize: '15px', color: 'var(--text-primary)' }}>{stay.name}</div>
                 <div style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: '2px 0' }}>{stay.location}</div>
-                <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-cyan)' }}>₹{stay.price?.toLocaleString()}/night</div>
+                <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--accent-cyan)' }}>
+                  {formatPrice(stay.price, currency)}/night
+                </div>
               </div>
               <Heart size={18} fill="#EF4444" color="#EF4444" />
             </div>
@@ -177,7 +180,9 @@ export default function SavedPlaces({ savedStays = [], savedFood = [], savedItin
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: '800', fontSize: '14px', color: 'var(--text-primary)' }}>{food.name}</div>
                 <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{food.cuisine || food.type}</div>
-                <div style={{ fontSize: '12px', color: '#22C55E', fontWeight: '800' }}>{food.hygiene}% Hygiene</div>
+                <div style={{ fontSize: '12px', color: '#22C55E', fontWeight: '800' }}>
+                  {food.hygiene}% Hygiene • {formatPrice(food.price || food.avgSpend || 180, currency)}
+                </div>
               </div>
             </div>
           ))}

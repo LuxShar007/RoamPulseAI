@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wifi, Signal, Battery, Smartphone, Sparkles, Palette } from 'lucide-react';
+import { Wifi, Signal, Smartphone, Sparkles, Palette } from 'lucide-react';
 
 export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTheme }) {
   const [time, setTime] = useState('9:41');
@@ -36,6 +36,7 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
   ];
 
   const isLightTheme = currentTheme === 'light-minimal' || currentTheme === 'light-rose';
+  const iconColor = isLightTheme ? 'var(--text-primary)' : '#FFFFFF';
 
   return (
     <div
@@ -181,14 +182,14 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
           display: 'flex',
           flexDirection: 'column'
         }}>
-          {/* Transparent Status Bar Floating Overlay */}
+          {/* Transparent iPhone 17 Status Bar Floating Overlay */}
           <div style={{
             position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
             height: '44px',
-            padding: '10px 24px 0 24px',
+            padding: '10px 22px 0 22px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -200,8 +201,9 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
             <span style={{
               fontSize: '14px',
               fontWeight: '800',
-              color: isLightTheme ? 'var(--text-primary)' : '#FFFFFF',
-              letterSpacing: '-0.2px'
+              color: iconColor,
+              letterSpacing: '-0.2px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
             }}>
               {time}
             </span>
@@ -248,16 +250,55 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
               </div>
             </div>
 
-            {/* Status Icons */}
+            {/* Pixel-Perfect iPhone 17 Status Icons (5G Signal, Wi-Fi, Battery Pill) */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              color: isLightTheme ? 'var(--text-primary)' : '#FFFFFF'
+              color: iconColor
             }}>
-              <Signal size={13} />
-              <Wifi size={13} />
-              <Battery size={16} fill={isLightTheme ? 'var(--text-primary)' : '#FFFFFF'} />
+              {/* 5G Signal Bars */}
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1.5px', height: '11px' }}>
+                <div style={{ width: '2.5px', height: '3px', borderRadius: '0.5px', background: iconColor }} />
+                <div style={{ width: '2.5px', height: '5.5px', borderRadius: '0.5px', background: iconColor }} />
+                <div style={{ width: '2.5px', height: '8px', borderRadius: '0.5px', background: iconColor }} />
+                <div style={{ width: '2.5px', height: '11px', borderRadius: '0.5px', background: iconColor }} />
+              </div>
+
+              {/* Wi-Fi Icon */}
+              <Wifi size={14} strokeWidth={2.5} color={iconColor} />
+
+              {/* iPhone 17 Battery Pill Indicator with 98% Badge */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ fontSize: '11px', fontWeight: '800', opacity: 0.9, color: iconColor }}>98%</span>
+                <div style={{
+                  width: '23px',
+                  height: '11px',
+                  borderRadius: '3.5px',
+                  border: `1.5px solid ${iconColor}`,
+                  padding: '1.5px',
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}>
+                  <div style={{
+                    width: '85%',
+                    height: '100%',
+                    background: iconColor,
+                    borderRadius: '1.5px'
+                  }} />
+                  {/* Battery Nipple Cap */}
+                  <div style={{
+                    position: 'absolute',
+                    right: '-3.5px',
+                    top: '2.5px',
+                    width: '2px',
+                    height: '4px',
+                    borderRadius: '0 1px 1px 0',
+                    background: iconColor
+                  }} />
+                </div>
+              </div>
             </div>
           </div>
 

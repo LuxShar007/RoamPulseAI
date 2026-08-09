@@ -3,6 +3,7 @@ import { ChevronLeft, Share2, Heart, MapPin, Sparkles, Navigation, BookmarkCheck
 import AIReviewModal from './AIReviewModal';
 import VoiceAssistantModal from './VoiceAssistantModal';
 import LiveNavigationModal from './LiveNavigationModal';
+import { formatPrice } from '../utils/currency';
 
 async function fetchLiveStats(placeName, placeLocation) {
   try {
@@ -16,7 +17,7 @@ async function fetchLiveStats(placeName, placeLocation) {
   }
 }
 
-export default function AIStatCardView({ stay, onBack, onNavigate, onBook }) {
+export default function AIStatCardView({ stay, onBack, onNavigate, onBook, currency = 'INR' }) {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showVoiceModal, setShowVoiceModal] = useState(false);
   const [showLiveNavModal, setShowLiveNavModal] = useState(false);
@@ -59,138 +60,273 @@ export default function AIStatCardView({ stay, onBack, onNavigate, onBook }) {
   }, [stay.name, stay.location]);
 
   return (
-    <div style={{ background: 'var(--bg-dark)', minHeight: '100%', paddingBottom: '32px' }}>
-      {/* Hero Image */}
-      <div style={{ position: 'relative', height: '320px', width: '100%' }}>
-        <img src={liveData?.photoUrl || images[activeImageIndex]} alt={stay.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    <div style={{ background: 'var(--bg-dark)', minHeight: '100%', paddingBottom: '90px' }}>
+      {/* Top Banner Image with Action Controls */}
+      <div style={{ position: 'relative', width: '100%', height: '280px' }}>
+        <img
+          src={images[activeImageIndex]}
+          alt={stay.name}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
         <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'linear-gradient(180deg, rgba(6,11,18,0.7) 0%, rgba(6,11,18,0) 40%, rgba(11,19,30,0.85) 100%)'
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to bottom, rgba(6,11,18,0.7) 0%, transparent 40%, rgba(6,11,18,0.95) 100%)'
         }} />
 
-        {/* Back + Action buttons */}
-        <div style={{ position: 'absolute', top: '16px', left: '16px', right: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
-          <button onClick={onBack} style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(6,11,18,0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+        {/* Top Control Header */}
+        <div style={{
+          position: 'absolute',
+          top: '44px',
+          left: '16px',
+          right: '16px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          zIndex: 10
+        }}>
+          <button
+            onClick={onBack}
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '50%',
+              background: 'rgba(6, 11, 18, 0.75)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid var(--border-subtle)',
+              color: '#FFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}
+          >
             <ChevronLeft size={22} />
           </button>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={() => setShowVoiceModal(true)} style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(0, 229, 192, 0.25)', backdropFilter: 'blur(10px)', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-              <Volume2 size={20} />
-            </button>
-            <button onClick={() => setSaved(!saved)} style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(6,11,18,0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', color: saved ? '#EF4444' : '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              onClick={() => setSaved(!saved)}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'rgba(6, 11, 18, 0.75)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid var(--border-subtle)',
+                color: saved ? '#EF4444' : '#FFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
               <Heart size={20} fill={saved ? '#EF4444' : 'none'} />
             </button>
-            <button style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(6,11,18,0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+            <button
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: 'rgba(6, 11, 18, 0.75)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid var(--border-subtle)',
+                color: '#FFF',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
               <Share2 size={20} />
             </button>
           </div>
         </div>
 
-        {/* Title overlay */}
-        <div style={{ position: 'absolute', bottom: '20px', left: '20px', right: '20px', zIndex: 10 }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(6, 11, 18, 0.85)', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)', fontSize: '12px', fontWeight: '800', marginBottom: '8px' }}>
-            <Sparkles size={14} />
-            <span>AI Verified Locality Stay</span>
-          </div>
-          <h1 style={{ fontSize: '24px', fontWeight: '800', color: '#FFF', marginBottom: '4px' }}>{stay.name}</h1>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', color: 'rgba(255,255,255,0.85)' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={14} color="var(--accent-cyan)" />{stay.location}</span>
-            <span>•</span>
-            <span>{stay.distance}</span>
+        {/* Floating Stay Title & Price Overlay */}
+        <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <div>
+              <span style={{ fontSize: '11px', color: 'var(--accent-cyan)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {stay.category || 'Lodges & Hotels'}
+              </span>
+              <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#FFF', margin: '2px 0 4px 0' }}>{stay.name}</h1>
+              <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <MapPin size={13} color="var(--accent-cyan)" />
+                <span>{stay.location}</span>
+              </div>
+            </div>
+
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: '20px', fontWeight: '800', color: 'var(--accent-cyan)' }}>
+                {formatPrice(stay.price, currency)}
+              </div>
+              <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)' }}>{stay.pricePeriod || '/night'}</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div style={{ padding: '0 20px' }}>
-        {/* Google Rating Badge & Review Trigger */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', background: 'var(--bg-card)', borderRadius: '18px', border: '1px solid var(--border-subtle)', margin: '20px 0' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Star size={18} fill="#F3A952" color="#F3A952" />
-              <span style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>{googleRating}</span>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>({reviewsCount} Google Reviews)</span>
+      {/* Main Stat Card Body Content */}
+      <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {/* Google Reviews Badge */}
+        <div className="glass-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#FEF08A', color: '#854D0E', padding: '4px 8px', borderRadius: '8px', fontWeight: '800', fontSize: '13px' }}>
+              <Star size={14} fill="#854D0E" />
+              <span>{googleRating}</span>
             </div>
-            <div style={{ fontSize: '11px', color: '#22C55E', fontWeight: '800', marginTop: '2px' }}>
-              ✓ Verified Customer Ratings
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>Google Verified Rating</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Based on {reviewsCount} customer reviews</div>
             </div>
           </div>
-          <button onClick={() => setShowReviewModal(true)} style={{ background: 'var(--bg-surface)', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)', padding: '8px 14px', borderRadius: '12px', fontSize: '12px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span>Read Reviews</span>
-            <ArrowRight size={14} />
-          </button>
-        </div>
 
-        {/* AI Metrics Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
-          <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: '18px', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700' }}>HYGIENE SCORE</div>
-            <div style={{ fontSize: '24px', fontWeight: '800', color: '#22C55E', margin: '4px 0' }}>{metrics.hygiene}%</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Sanitized Restrooms</div>
-          </div>
-          <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: '18px', border: '1px solid var(--border-subtle)' }}>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700' }}>SAFETY INDEX</div>
-            <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--accent-cyan)', margin: '4px 0' }}>{metrics.safety}%</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>24/7 CCTV & Patrol</div>
-          </div>
-        </div>
-
-        {/* Insights list */}
-        <div style={{ background: 'var(--bg-card)', padding: '16px', borderRadius: '18px', border: '1px solid var(--border-subtle)', marginBottom: '24px' }}>
-          <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Sparkles size={16} color="var(--accent-cyan)" />
-            <span>AI Review Summaries</span>
-          </div>
-          {resolvedInsights.map((insight, i) => (
-            <div key={i} style={{ fontSize: '12px', color: 'var(--text-secondary)', padding: '6px 0', borderBottom: i < resolvedInsights.length - 1 ? '1px solid var(--border-subtle)' : 'none', display: 'flex', gap: '8px' }}>
-              <span style={{ color: 'var(--accent-cyan)' }}>•</span>
-              <span>{insight}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Action buttons */}
-        <div style={{ display: 'flex', gap: '12px' }}>
           <button
-            onClick={() => setShowLiveNavModal(true)}
-            style={{
-              flex: 1, background: 'var(--bg-card)', border: '1px solid var(--accent-cyan)', color: 'var(--accent-cyan)',
-              fontWeight: '800', padding: '14px', borderRadius: '16px', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-              fontSize: '14px'
-            }}
+            onClick={() => setShowReviewModal(true)}
+            style={{ background: 'none', border: 'none', color: 'var(--accent-cyan)', fontWeight: '800', fontSize: '12px', cursor: 'pointer' }}
           >
-            <Navigation size={18} />
-            <span>Live GPS Navigation</span>
+            View Reviews
           </button>
-          <button onClick={onBook} className="btn-primary" style={{ flex: 1.2 }}>
-            <BookmarkCheck size={18} />
-            <span>Book / Reserve</span>
-          </button>
+        </div>
+
+        {/* AI Stat Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div className="glass-card" style={{ padding: '14px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700' }}>HYGIENE SCORE</div>
+            <div style={{ fontSize: '22px', fontWeight: '800', color: '#22C55E', margin: '4px 0' }}>{metrics.hygiene}%</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Sanitization & Washrooms</div>
+          </div>
+
+          <div className="glass-card" style={{ padding: '14px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700' }}>SAFETY INDEX</div>
+            <div style={{ fontSize: '22px', fontWeight: '800', color: 'var(--accent-cyan)', margin: '4px 0' }}>{metrics.safety}%</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>CCTV & Night Lighting</div>
+          </div>
+
+          <div className="glass-card" style={{ padding: '14px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700' }}>PEACE INDEX</div>
+            <div style={{ fontSize: '22px', fontWeight: '800', color: 'var(--accent-purple)', margin: '4px 0' }}>{metrics.peacefulness}%</div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Ambient Quiet (&lt;25dB)</div>
+          </div>
+
+          <div className="glass-card" style={{ padding: '14px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700' }}>EXPECTED SPEND</div>
+            <div style={{ fontSize: '22px', fontWeight: '800', color: 'var(--accent-amber)', margin: '4px 0' }}>
+              {formatPrice(metrics.expectedSpend, currency)}
+            </div>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Avg stay estimate</div>
+          </div>
+        </div>
+
+        {/* AI Bullet Summaries */}
+        <div className="glass-card" style={{ padding: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sparkles size={16} color="var(--accent-cyan)" />
+              <span style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>AI Review Insights</span>
+            </div>
+            <button
+              onClick={() => setShowVoiceModal(true)}
+              style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: '10px', padding: '4px 10px', color: 'var(--accent-cyan)', fontSize: '11px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+            >
+              <Volume2 size={13} />
+              <span>Voice Briefing</span>
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {resolvedInsights.map((insight, idx) => (
+              <div key={idx} style={{ fontSize: '12px', color: 'var(--text-primary)', display: 'flex', gap: '8px', lineHeight: 1.4 }}>
+                <span style={{ color: 'var(--accent-cyan)', fontWeight: '800' }}>•</span>
+                <span>{insight}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {showVoiceModal && (
-        <VoiceAssistantModal
-          venue={stay}
-          localityName={stay.location}
-          onClose={() => setShowVoiceModal(false)}
+      {/* Fixed Bottom CTA Navigation & Booking Bar */}
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: '12px 20px',
+        background: 'var(--bg-card)',
+        borderTop: '1px solid var(--border-subtle)',
+        display: 'flex',
+        gap: '12px',
+        zIndex: 100
+      }}>
+        <button
+          onClick={() => setShowLiveNavModal(true)}
+          style={{
+            flex: 1,
+            padding: '14px',
+            borderRadius: '16px',
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--accent-cyan)',
+            color: 'var(--accent-cyan)',
+            fontWeight: '800',
+            fontSize: '14px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}
+        >
+          <Navigation size={18} />
+          <span>Live Directions</span>
+        </button>
+
+        <button
+          onClick={onBook}
+          style={{
+            flex: 1,
+            padding: '14px',
+            borderRadius: '16px',
+            background: 'var(--accent-cyan)',
+            border: 'none',
+            color: '#FFFFFF',
+            fontWeight: '800',
+            fontSize: '14px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px'
+          }}
+        >
+          <span>Book Stay Now</span>
+          <ArrowRight size={18} />
+        </button>
+      </div>
+
+      {/* Modals */}
+      {showReviewModal && (
+        <AIReviewModal
+          placeName={stay.name}
+          rating={googleRating}
+          reviewsCount={reviewsCount}
+          reviewsList={googleReviews}
+          onClose={() => setShowReviewModal(false)}
         />
       )}
 
-      {showReviewModal && (
-        <AIReviewModal
-          googleRating={googleRating}
-          reviewsCount={reviewsCount}
-          reviews={googleReviews}
-          onClose={() => setShowReviewModal(false)}
+      {showVoiceModal && (
+        <VoiceAssistantModal
+          placeName={stay.name}
+          metrics={metrics}
+          insights={resolvedInsights}
+          onClose={() => setShowVoiceModal(false)}
         />
       )}
 
       {showLiveNavModal && (
         <LiveNavigationModal
-          destination={stay.name}
-          localityName={stay.location}
+          target={stay}
           onClose={() => setShowLiveNavModal(false)}
         />
       )}
