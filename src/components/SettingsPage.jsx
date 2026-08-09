@@ -1,8 +1,22 @@
 import React, { useState } from 'react';
-import { DollarSign, Palette, Lock, LogOut, ArrowLeft, Check, Globe } from 'lucide-react';
+import { DollarSign, Palette, Lock, LogOut, ArrowLeft, Check, Globe, ExternalLink } from 'lucide-react';
+
+function FigmaIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size * 1.5} viewBox="0 0 38 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 28.5C19 23.2533 23.2533 19 28.5 19C33.7467 19 38 23.2533 38 28.5C38 33.7467 33.7467 38 28.5 38H19V28.5Z" fill="#0ACF83"/>
+      <path d="M0 47.5C0 42.2533 4.25329 38 9.5 38H19V47.5C19 52.7467 14.7467 57 9.5 57C4.25329 57 0 52.7467 0 47.5Z" fill="#1ABCFE"/>
+      <path d="M0 28.5C0 23.2533 4.25329 19 9.5 19H19V38H9.5C4.25329 38 0 33.7467 0 28.5Z" fill="#A259FF"/>
+      <path d="M0 9.5C0 4.25329 4.25329 0 9.5 0H19V19H9.5C4.25329 19 0 14.7467 0 9.5Z" fill="#F24E1E"/>
+      <path d="M19 0H28.5C33.7467 0 38 4.25329 38 9.5C38 14.7467 33.7467 19 28.5 19H19V0Z" fill="#FF7262"/>
+    </svg>
+  );
+}
 
 export default function SettingsPage({ user, onBack, onLogout, currency, setCurrency, currentTheme, onSelectTheme }) {
   const [privacy, setPrivacy] = useState(true);
+
+  const figmaDesignUrl = "https://www.figma.com/design/8RbDA2X0xEqG5NJW0pQf11/RoamPulseAI?node-id=0-1&t=w7L1KqsOf1UQdOH9-1";
 
   const themes = [
     { id: 'emerald', label: 'Dark Emerald', desc: 'Deep forest teal & mint cyan', primary: '#00E5C0' },
@@ -33,6 +47,42 @@ export default function SettingsPage({ user, onBack, onLogout, currency, setCurr
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Figma Brainstorm Prototype Link Card */}
+          <div className="glass-card" style={{ background: 'linear-gradient(135deg, rgba(242,78,30,0.12) 0%, rgba(162,89,255,0.12) 100%)', border: '1px solid rgba(242,78,30,0.4)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ width: '38px', height: '38px', borderRadius: '12px', background: 'linear-gradient(135deg, #F24E1E 0%, #A259FF 100%)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <FigmaIcon size={16} />
+                </div>
+                <div>
+                  <div style={{ fontWeight: '800', fontSize: '14px', color: 'var(--text-primary)' }}>Figma Brainstorm Prototype</div>
+                  <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>View raw scratch node canvas</div>
+                </div>
+              </div>
+
+              <a
+                href={figmaDesignUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #F24E1E 0%, #A259FF 100%)',
+                  color: '#FFFFFF',
+                  fontSize: '12px',
+                  fontWeight: '800',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                <span>Open Canvas</span>
+                <ExternalLink size={13} />
+              </a>
+            </div>
+          </div>
+
           {/* Currency Display Selector */}
           <div className="glass-card">
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
