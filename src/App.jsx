@@ -405,6 +405,7 @@ export default function App() {
             localityName={localityName}
             onClose={() => setActiveTab('home')}
             onSaveItinerary={handleSaveItinerary}
+            currency={currency}
           />
         );
       }
@@ -529,6 +530,7 @@ export default function App() {
             localityName={localityName}
             onClose={() => setShowItineraryModal(false)}
             onSaveItinerary={handleSaveItinerary}
+            currency={currency}
           />
         )}
 

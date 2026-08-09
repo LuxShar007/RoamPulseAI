@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Sparkles, Calendar, Compass, Clock, ShieldCheck, MapPin, X, ArrowRight, Download, CheckCircle2 } from 'lucide-react';
+import { formatPrice } from '../utils/currency';
 
-export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose, onSaveItinerary }) {
+export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose, onSaveItinerary, currency = 'INR' }) {
   const [days, setDays] = useState(2);
   const [vibe, setVibe] = useState('PEACE'); // PEACE, BUDGET, SOLO, LUXURY
-  const [budget, setBudget] = useState('₹3,000 - ₹6,000');
+  const [budgetVal, setBudgetVal] = useState('3000_6000');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState(null);
 
@@ -13,6 +14,12 @@ export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose
     { id: 'BUDGET', label: '💰 Budget Explorer', desc: 'Verified LocoGems street food, value lodges' },
     { id: 'SOLO', label: '🎒 Solo Backpacker', desc: '24/7 safe security stays & vibrant markets' },
     { id: 'LUXURY', label: '✨ Luxury & Dining', desc: '5-Star boutique hotels & fine dining' }
+  ];
+
+  const budgetOptions = [
+    { id: '1500_3000', label: `${formatPrice(1500, currency)} - ${formatPrice(3000, currency)} (Budget Explorer)` },
+    { id: '3000_6000', label: `${formatPrice(3000, currency)} - ${formatPrice(6000, currency)} (Balanced Mid-Range)` },
+    { id: '6000_12000', label: `${formatPrice(6000, currency)} - ${formatPrice(12000, currency)}+ (Premium Luxury)` }
   ];
 
   const handleGenerate = () => {
@@ -31,7 +38,8 @@ export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose
               spot: `${localityName} Local Cafe & Dosa Hub`,
               type: 'Food',
               hygiene: 96,
-              cost: '₹180',
+              rawCost: 180,
+              costText: formatPrice(180, currency),
               note: 'Verified 100% glove-worn hygiene service & stainless preparation.'
             },
             {
@@ -40,7 +48,8 @@ export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose
               spot: `${localityName} Central Heritage Promenade`,
               type: 'Sightseeing',
               hygiene: 92,
-              cost: 'Free',
+              rawCost: 0,
+              costText: 'Free',
               note: '24/7 CCTV monitored safety zone with public rest stops nearby.'
             },
             {
@@ -49,7 +58,8 @@ export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose
               spot: `Sharma Street Food Market ${localityName}`,
               type: 'LocoGem',
               hygiene: 95,
-              cost: '₹140',
+              rawCost: 140,
+              costText: formatPrice(140, currency),
               note: 'Google ⭐ 4.8 rated street food vendor. Fresh oil verified.'
             },
             {
@@ -58,7 +68,8 @@ export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose
               spot: `ZenITH Boutique Lodge & Suites`,
               type: 'Stay',
               hygiene: 98,
-              cost: '₹1,500/night',
+              rawCost: 1500,
+              costText: `${formatPrice(1500, currency)}/night`,
               note: 'Soundproof acoustics, sanitized washroom, quiet index > 90%.'
             },
             {
@@ -67,7 +78,8 @@ export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose
               spot: `Coastal Spice Bistro ${localityName}`,
               type: 'Dining',
               hygiene: 94,
-              cost: '₹450',
+              rawCost: 450,
+              costText: formatPrice(450, currency),
               note: 'Outdoor seating with high safety index and verified clean restrooms.'
             }
           ]
@@ -173,14 +185,14 @@ export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose
               </div>
             </div>
 
-            {/* Budget Selector */}
+            {/* Dynamic Currency Budget Selector */}
             <div style={{ marginBottom: '24px' }}>
               <label style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)', display: 'block', marginBottom: '8px' }}>
-                Target Locality Budget
+                Target Locality Budget ({currency})
               </label>
               <select
-                value={budget}
-                onChange={(e) => setBudget(e.target.value)}
+                value={budgetVal}
+                onChange={(e) => setBudgetVal(e.target.value)}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -193,9 +205,9 @@ export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose
                   outline: 'none'
                 }}
               >
-                <option value="₹1,500 - ₹3,000">₹1,500 - ₹3,000 (Budget Explorer)</option>
-                <option value="₹3,000 - ₹6,000">₹3,000 - ₹6,000 (Balanced Mid-Range)</option>
-                <option value="₹6,000 - ₹12,000+">₹6,000 - ₹12,000+ (Premium Luxury)</option>
+                {budgetOptions.map((opt) => (
+                  <option key={opt.id} value={opt.id}>{opt.label}</option>
+                ))}
               </select>
             </div>
 
@@ -230,7 +242,12 @@ export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose
                       <div key={idx} style={{ background: 'var(--bg-card)', padding: '12px', borderRadius: '14px', border: '1px solid var(--border-subtle)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                           <span style={{ fontSize: '11px', color: 'var(--accent-cyan)', fontWeight: '800' }}>{act.time}</span>
-                          <span style={{ fontSize: '11px', color: '#22C55E', fontWeight: '800' }}>✓ {act.hygiene}% Hygiene</span>
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <span style={{ fontSize: '11px', color: 'var(--accent-cyan)', fontWeight: '800' }}>
+                              {act.costText || formatPrice(act.rawCost || 0, currency)}
+                            </span>
+                            <span style={{ fontSize: '11px', color: '#22C55E', fontWeight: '800' }}>✓ {act.hygiene}% Hygiene</span>
+                          </div>
                         </div>
                         <div style={{ fontWeight: '800', fontSize: '14px', color: 'var(--text-primary)' }}>{act.name}</div>
                         <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
