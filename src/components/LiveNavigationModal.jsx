@@ -1,38 +1,142 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import L from 'leaflet';
 import { Navigation, Compass, MapPin, Clock, ShieldCheck, X, ArrowUpRight, ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { fetchOSMRoute } from '../services/openMapService';
 
+// Custom Leaflet Icons for Navigation
+function makeDivIcon(emoji, color, shadowColor) {
+  return L.divIcon({
+    html: `
+      <div style="
+        width:42px; height:42px; border-radius:50%;
+        background:${color}; border:3px solid #FFFFFF;
+        display:flex; align-items:center; justify-content:center;
+        font-size:20px; cursor:pointer;
+        box-shadow:0 0 20px ${shadowColor}, 0 4px 12px rgba(0,0,0,0.6);
+      ">${emoji}</div>`,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21],
+    className: ''
+  });
+}
+
+const USER_NAV_ICON = L.divIcon({
+  html: `
+    <div style="
+      width:24px; height:24px; border-radius:50%;
+      background:#00E5C0; border:3px solid #FFFFFF;
+      box-shadow:0 0 20px rgba(0,229,192,0.9), 0 0 0 10px rgba(0,229,192,0.25);
+    "></div>`,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+  className: ''
+});
+
+const DESTINATION_ICON = makeDivIcon('📍', '#EF4444', 'rgba(239,68,68,0.8)');
+
 export default function LiveNavigationModal({ target, userPos = [19.033, 73.029], onClose }) {
+  const mapContainerRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const routePolylineRef = useRef(null);
+
   const [stepIndex, setStepIndex] = useState(0);
   const [routeData, setRouteData] = useState(null);
   const [isLoadingRoute, setIsLoadingRoute] = useState(true);
 
   const startLat = userPos[0];
   const startLng = userPos[1];
-  const destLat = target?.lat || startLat + 0.015;
-  const destLng = target?.lng || startLng + 0.012;
+  const destLat = target?.lat || startLat + 0.008;
+  const destLng = target?.lng || startLng + 0.007;
 
+  // Initialize Interactive Leaflet Map
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    if (!mapInstanceRef.current) {
+      const map = L.map(mapContainerRef.current, {
+        center: [startLat, startLng],
+        zoom: 15,
+        zoomControl: false,
+        attributionControl: false
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        maxZoom: 19
+      }).addTo(map);
+
+      // Add User Location Marker
+      L.marker([startLat, startLng], { icon: USER_NAV_ICON })
+        .addTo(map)
+        .bindTooltip("You are here", { permanent: true, direction: 'top', className: 'nav-tooltip' });
+
+      // Add Destination Marker
+      L.marker([destLat, destLng], { icon: DESTINATION_ICON })
+        .addTo(map)
+        .bindTooltip(target?.name || "Destination", { permanent: true, direction: 'top', className: 'nav-tooltip' });
+
+      mapInstanceRef.current = map;
+    }
+
+    // Fix tile rendering on open
+    setTimeout(() => {
+      if (mapInstanceRef.current) mapInstanceRef.current.invalidateSize();
+    }, 200);
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, []);
+
+  // Fetch OSRM Real-Time Turn-by-Turn Route
   useEffect(() => {
     let active = true;
     setIsLoadingRoute(true);
 
     fetchOSMRoute(startLat, startLng, destLat, destLng).then((data) => {
-      if (active) {
-        if (data) {
-          setRouteData(data);
-        } else {
-          setRouteData({
-            distanceText: target?.distance || '850m',
-            etaText: '4 mins',
-            polylineCoordinates: [[startLat, startLng], [destLat, destLng]],
-            turnSteps: [
-              { instruction: `Head north toward ${target?.name || 'destination'}`, distance: '250m', modifier: 'straight' },
-              { instruction: `Turn right toward venue entrance`, distance: '350m', modifier: 'right' },
-              { instruction: `Arrive at ${target?.name || 'venue'} (Verified Safe Zone)`, distance: '250m', modifier: 'arrive' }
-            ]
-          });
+      if (!active) return;
+
+      const fallbackCoords = [
+        [startLat, startLng],
+        [startLat + 0.003, startLng + 0.002],
+        [startLat + 0.005, startLng + 0.005],
+        [destLat, destLng]
+      ];
+
+      const coords = data?.polylineCoordinates?.length ? data.polylineCoordinates : fallbackCoords;
+
+      const resolved = data || {
+        distanceText: target?.distance || '850m',
+        etaText: '4 mins',
+        polylineCoordinates: coords,
+        turnSteps: [
+          { instruction: `Head north on main road toward ${target?.name || 'destination'}`, distance: '250m', modifier: 'straight' },
+          { instruction: `Turn right at sector junction`, distance: '350m', modifier: 'right' },
+          { instruction: `Arrive at ${target?.name || 'venue'} (Verified Safe Zone)`, distance: '250m', modifier: 'arrive' }
+        ]
+      };
+
+      setRouteData(resolved);
+      setIsLoadingRoute(false);
+
+      // Render glowing cyan route polyline on Leaflet map
+      if (mapInstanceRef.current && coords.length > 0) {
+        if (routePolylineRef.current) {
+          mapInstanceRef.current.removeLayer(routePolylineRef.current);
         }
-        setIsLoadingRoute(false);
+
+        const polyline = L.polyline(coords, {
+          color: '#00E5C0',
+          weight: 6,
+          opacity: 0.9,
+          lineCap: 'round',
+          lineJoin: 'round'
+        }).addTo(mapInstanceRef.current);
+
+        routePolylineRef.current = polyline;
+        mapInstanceRef.current.fitBounds(polyline.getBounds(), { padding: [50, 50] });
       }
     });
 
@@ -69,7 +173,8 @@ export default function LiveNavigationModal({ target, userPos = [19.033, 73.029]
         borderBottom: '1px solid var(--border-subtle)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        zIndex: 20
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
@@ -96,23 +201,16 @@ export default function LiveNavigationModal({ target, userPos = [19.033, 73.029]
         </button>
       </div>
 
-      {/* Real-Time Routing Canvas */}
+      {/* Real Interactive Leaflet GPS Map Container */}
       <div style={{
         flex: 1,
         position: 'relative',
-        background: 'var(--bg-dark)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        width: '100%',
+        height: '100%',
         overflow: 'hidden'
       }}>
-        {/* Dynamic Grid Background */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: 'radial-gradient(var(--border-subtle) 1px, transparent 1px)',
-          backgroundSize: '24px 24px'
-        }} />
+        {/* Leaflet Map Target Element */}
+        <div ref={mapContainerRef} style={{ width: '100%', height: '100%', zIndex: 1 }} />
 
         {/* Turn-by-Turn Instruction Card Banner Overlay */}
         <div style={{
@@ -123,11 +221,11 @@ export default function LiveNavigationModal({ target, userPos = [19.033, 73.029]
           background: 'var(--bg-card)',
           border: '1px solid var(--accent-cyan)',
           borderRadius: '20px',
-          padding: '16px',
+          padding: '14px 16px',
           display: 'flex',
           alignItems: 'center',
           gap: '14px',
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.25)',
           zIndex: 10
         }}>
           <div style={{
@@ -151,31 +249,42 @@ export default function LiveNavigationModal({ target, userPos = [19.033, 73.029]
             )}
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)' }}>
+            <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>
               {currentStep.instruction}
             </div>
-            <div style={{ fontSize: '12px', color: 'var(--accent-cyan)', fontWeight: '800', marginTop: '2px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--accent-cyan)', fontWeight: '800', marginTop: '2px' }}>
               In {currentStep.distance} • Step {stepIndex + 1} of {steps.length}
             </div>
           </div>
         </div>
 
-        {/* Live Moving Compass Radar Badge */}
-        <div style={{
-          width: '90px',
-          height: '90px',
-          borderRadius: '50%',
-          background: 'var(--border-subtle)',
-          border: '2px solid var(--accent-cyan)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--accent-cyan)',
-          boxShadow: '0 0 40px var(--border-subtle)',
-          animation: 'radarPulse 2s ease-in-out infinite'
-        }}>
-          <Compass size={44} />
-        </div>
+        {/* Recenter GPS Button */}
+        <button
+          onClick={() => {
+            if (mapInstanceRef.current && routePolylineRef.current) {
+              mapInstanceRef.current.fitBounds(routePolylineRef.current.getBounds(), { padding: [40, 40] });
+            }
+          }}
+          style={{
+            position: 'absolute',
+            bottom: '20px',
+            right: '16px',
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-subtle)',
+            color: 'var(--accent-cyan)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+            zIndex: 10
+          }}
+        >
+          <Compass size={22} />
+        </button>
       </div>
 
       {/* Bottom Summary & Live Google Maps Navigation Action */}
@@ -187,18 +296,19 @@ export default function LiveNavigationModal({ target, userPos = [19.033, 73.029]
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '12px'
+        gap: '12px',
+        zIndex: 20
       }}>
         <div style={{ display: 'flex', gap: '20px' }}>
           <div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '800' }}>ESTIMATED ETA</div>
-            <div style={{ fontSize: '20px', fontWeight: '800', color: '#22C55E' }}>
+            <div style={{ fontSize: '18px', fontWeight: '800', color: '#22C55E' }}>
               {isLoadingRoute ? 'Calculating...' : (routeData?.etaText || '3 mins')}
             </div>
           </div>
           <div>
             <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '800' }}>REAL DISTANCE</div>
-            <div style={{ fontSize: '20px', fontWeight: '800', color: 'var(--accent-cyan)' }}>
+            <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--accent-cyan)' }}>
               {isLoadingRoute ? 'Calculating...' : (routeData?.distanceText || target.distance || '450m')}
             </div>
           </div>
