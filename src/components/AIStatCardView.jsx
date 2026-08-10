@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Share2, Heart, MapPin, Sparkles, Navigation, BookmarkCheck, ArrowRight, Star, Volume2 } from 'lucide-react';
+import { ChevronLeft, Share2, Heart, MapPin, Sparkles, Navigation, ArrowRight, Star, Volume2 } from 'lucide-react';
 import AIReviewModal from './AIReviewModal';
 import VoiceAssistantModal from './VoiceAssistantModal';
 import LiveNavigationModal from './LiveNavigationModal';
@@ -17,14 +17,13 @@ async function fetchLiveStats(placeName, placeLocation) {
   }
 }
 
-export default function AIStatCardView({ stay, onBack, onNavigate, onBook, currency = 'INR' }) {
+export default function AIStatCardView({ stay, onBack, onNavigate: _onNavigate, onBook, currency = 'INR' }) {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showVoiceModal, setShowVoiceModal] = useState(false);
   const [showLiveNavModal, setShowLiveNavModal] = useState(false);
   const [activeImageIndex] = useState(0);
   const [saved, setSaved] = useState(false);
   const [liveData, setLiveData] = useState(null);
-  const [isLoadingLive, setIsLoadingLive] = useState(true);
 
   const images = stay.gallery || [stay.image];
   const baseMetics = stay.aiMetrics || { hygiene: 94, safety: 95, peacefulness: 88, valueForMoney: 4.6, expectedSpend: 1200 };
@@ -49,11 +48,9 @@ export default function AIStatCardView({ stay, onBack, onNavigate, onBook, curre
 
   useEffect(() => {
     let cancelled = false;
-    setIsLoadingLive(true);
     fetchLiveStats(stay.name, stay.location).then(data => {
       if (!cancelled) {
         setLiveData(data);
-        setIsLoadingLive(false);
       }
     });
     return () => { cancelled = true; };

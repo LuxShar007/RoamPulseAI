@@ -177,7 +177,7 @@ export async function fetchCategoryRealtime(queryTerm, category, centerLat, cent
 
 // ─── 4. Fetch All Locality Real-Time Data ───────────────────────────────────
 
-export async function fetchAllLocalityData(lat = 19.033, lng = 73.029, radius = 3500) {
+export async function fetchAllLocalityData(lat = 19.033, lng = 73.029) {
   try {
     const locality = await reverseGeocodeLocality(lat, lng);
 

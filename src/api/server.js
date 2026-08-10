@@ -169,7 +169,7 @@ app.get('/api/google/place', async (req, res) => {
         }
       }
     });
-  } catch (err) {
+  } catch {
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
@@ -185,7 +185,7 @@ app.get('/api/google/nearby', async (req, res) => {
       source: 'openstreetmap',
       data: places.length ? places : (type === 'hospital' ? mockData.medicalHubs : mockData.washrooms)
     });
-  } catch (err) {
+  } catch {
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });

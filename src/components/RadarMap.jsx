@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { ShieldAlert, CheckCircle2, Layers, LocateFixed, Flame, Home, Hospital } from 'lucide-react';
+import { LocateFixed } from 'lucide-react';
 import PinBottomSheet from './PinBottomSheet';
 import { mockData } from '../data/mockData.js';
 
@@ -82,7 +82,7 @@ export default function RadarMap({ medicalHubs, washrooms, stays, locogems, user
       map.remove();
       mapInstanceRef.current = null;
     };
-  }, []);
+  }, [userPos]);
 
   // Re-center when userPos changes
   useEffect(() => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Calendar, Compass, Clock, ShieldCheck, MapPin, X, ArrowRight, Download, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Compass, X, CheckCircle2, MapPin } from 'lucide-react';
 import { formatPrice } from '../utils/currency';
 
 export default function ItineraryPlanner({ localityName = 'Navi Mumbai', onClose, onSaveItinerary, currency = 'INR' }) {

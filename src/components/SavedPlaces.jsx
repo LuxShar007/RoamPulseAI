@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, Calendar, Sparkles, MapPin, ChevronDown, ChevronUp } from 'lucide-react';
+import { Calendar, Sparkles, ChevronDown, ChevronUp, Heart } from 'lucide-react';
 import { formatPrice } from '../utils/currency';
 
 export default function SavedPlaces({ savedStays = [], savedFood = [], savedItineraries = [], onSelectStay, currency = 'INR' }) {

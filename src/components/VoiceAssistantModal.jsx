@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Volume2, VolumeX, Mic, X, Play, Square, ShieldCheck, Sparkles } from 'lucide-react';
+import { X, Play, Square, Sparkles } from 'lucide-react';
 import { voiceService } from '../services/voiceService';
 
 export default function VoiceAssistantModal({ venue, localityName = 'Navi Mumbai', onClose }) {
@@ -28,7 +28,7 @@ export default function VoiceAssistantModal({ venue, localityName = 'Navi Mumbai
     setIsPlaying(true);
     voiceService.speak(scriptText, () => setIsPlaying(false));
     return () => voiceService.stop();
-  }, [venue, localityName]);
+  }, [scriptText, venue, localityName]);
 
   return (
     <div className="modal-overlay" style={{ background: 'rgba(6, 11, 18, 0.85)', backdropFilter: 'blur(16px)' }}>

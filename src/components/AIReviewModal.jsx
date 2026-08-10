@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, CheckCircle2, AlertTriangle, X, Shield, Star, ThumbsUp } from 'lucide-react';
+import { Sparkles, CheckCircle2, AlertTriangle, X } from 'lucide-react';
 
 export default function AIReviewModal({ stay, onClose }) {
   const insights = stay.aiInsights || stay.aiMetrics?.reviewInsights || [

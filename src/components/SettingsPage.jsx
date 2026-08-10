@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, Palette, Lock, LogOut, ArrowLeft, Check, Globe, ExternalLink } from 'lucide-react';
+import { Palette, Lock, LogOut, ArrowLeft, Check, Globe, ExternalLink } from 'lucide-react';
 
 function FigmaIcon({ size = 16 }) {
   return (
@@ -13,7 +13,7 @@ function FigmaIcon({ size = 16 }) {
   );
 }
 
-export default function SettingsPage({ user, onBack, onLogout, currency, setCurrency, currentTheme, onSelectTheme }) {
+export default function SettingsPage({ onBack, onLogout, currency, setCurrency, currentTheme, onSelectTheme }) {
   const [privacy, setPrivacy] = useState(true);
 
   const figmaDesignUrl = "https://www.figma.com/design/8RbDA2X0xEqG5NJW0pQf11/RoamPulseAI?node-id=0-1&t=w7L1KqsOf1UQdOH9-1";

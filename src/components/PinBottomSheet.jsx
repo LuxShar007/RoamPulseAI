@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigation, Clock, ShieldCheck, Phone, MapPin, X, Star } from 'lucide-react';
+import { Navigation, Phone, MapPin, X, Star } from 'lucide-react';
 
 export default function PinBottomSheet({ pin, onClose, onNavigate }) {
   if (!pin) return null;
@@ -7,7 +7,6 @@ export default function PinBottomSheet({ pin, onClose, onNavigate }) {
   const isMedical = pin.pinType === 'medical' || pin.type === 'Hospital' || pin.type === 'Emergency Clinic';
   const isWashroom = pin.pinType === 'washroom' || pin.hygiene !== undefined;
   const isFood = pin.pinType === 'food';
-  const isStay = pin.pinType === 'stay';
 
   const rating = pin.googleRating || pin.rating || 4.6;
   const reviewsCount = pin.googleReviewsCount || 94;

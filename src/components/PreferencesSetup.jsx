@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Check, Sparkles } from 'lucide-react';
 
 export default function PreferencesSetup({ onSave }) {
   const [userType, setUserType] = useState('Tourist'); // Tourist vs Local Resident

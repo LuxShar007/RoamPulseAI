@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Wifi, Signal, Smartphone, Sparkles, Palette, ExternalLink } from 'lucide-react';
+import { Wifi, Smartphone, Sparkles, Palette, ExternalLink } from 'lucide-react';
 
 function FigmaIcon({ size = 15 }) {
   return (
@@ -15,7 +15,7 @@ function FigmaIcon({ size = 15 }) {
 
 export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTheme }) {
   const [time, setTime] = useState('9:41');
-  const [deviceFinish, setDeviceFinish] = useState('titanium');
+  const [deviceFinish] = useState('titanium');
   const [isDynamicIslandExpanded, setIsDynamicIslandExpanded] = useState(false);
 
   const figmaDesignUrl = "https://www.figma.com/design/8RbDA2X0xEqG5NJW0pQf11/RoamPulseAI?node-id=0-1&t=w7L1KqsOf1UQdOH9-1";

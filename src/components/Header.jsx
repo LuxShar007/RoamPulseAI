@@ -1,10 +1,9 @@
 import React from 'react';
-import { MapPin, Search, Bell, SlidersHorizontal, CloudSun } from 'lucide-react';
+import { MapPin, Search, Bell, SlidersHorizontal } from 'lucide-react';
 
 export default function Header({
   location,
   searchQuery,
-  setSearchQuery,
   onOpenSearch,
   onOpenNotifications,
   onOpenFilter,

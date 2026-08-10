@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { Navigation, Compass, MapPin, Clock, ShieldCheck, X, ArrowUpRight, ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
+import { Navigation, Compass, X, ArrowUpRight, ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { fetchOSMRoute } from '../services/openMapService';
 
 // Custom Leaflet Icons for Navigation
@@ -88,7 +88,7 @@ export default function LiveNavigationModal({ target, userPos = [19.033, 73.029]
         mapInstanceRef.current = null;
       }
     };
-  }, []);
+  }, [startLat, startLng, destLat, destLng, target?.name]);
 
   // Fetch OSRM Real-Time Turn-by-Turn Route
   useEffect(() => {

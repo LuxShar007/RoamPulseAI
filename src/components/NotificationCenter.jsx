@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bell, ShieldAlert, Tag, CheckCircle2, X } from 'lucide-react';
+import { ShieldAlert, Tag, CheckCircle2, X } from 'lucide-react';
 
 export default function NotificationCenter({ notifications, onClose }) {
   const [selectedNotif, setSelectedNotif] = useState(null);

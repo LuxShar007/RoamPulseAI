@@ -1,5 +1,5 @@
 import React from 'react';
-import { PiggyBank, TrendingDown, Sparkles, CheckCircle2, ArrowRight } from 'lucide-react';
+import { PiggyBank, Sparkles } from 'lucide-react';
 import { formatPrice } from '../utils/currency';
 
 export default function BudgetOptimizer({ savingsSummary, currency = 'INR' }) {

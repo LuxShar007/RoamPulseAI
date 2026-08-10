@@ -13,7 +13,7 @@ async function main() {
   await prisma.user.deleteMany({});
 
   // Seed Demo User
-  const demoUser = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email: 'sharv@roampulse.ai',
       passwordHash: '$2a$10$e8c1...demo',
