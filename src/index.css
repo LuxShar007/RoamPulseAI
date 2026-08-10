@@ -120,6 +120,53 @@ html, body {
   background: #060A0D;
 }
 
+.app-shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-dark);
+}
+
+.mobile-compat-banner {
+  margin: 12px 12px 8px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(0, 229, 192, 0.16), rgba(139, 92, 246, 0.16));
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-primary);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.mobile-compat-banner__icon {
+  margin-top: 2px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.mobile-compat-banner__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mobile-compat-banner__text strong {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.mobile-compat-banner__text p {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
 /* Scrollable screen content */
 .screen-content {
   flex: 1;
