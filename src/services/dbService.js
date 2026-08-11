@@ -53,6 +53,32 @@ const INITIAL_DATA = {
       ],
       createdAt: new Date().toISOString()
     }
+  ],
+  reviews: [
+    {
+      id: 'rev-101',
+      userName: 'Aarav Sharma',
+      userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+      rating: 5,
+      categories: { hygiene: 5, safety: 5, comfort: 5, value: 4 },
+      locality: 'Navi Mumbai',
+      placeName: 'ZenITH Luxury Eco Pods',
+      comment: 'Absolutely stunning locality experience! The AI hygiene score was 100% accurate, and live radar safety alerts gave complete peace of mind while traveling.',
+      createdAt: '2026-08-10T14:32:00.000Z',
+      verified: true
+    },
+    {
+      id: 'rev-102',
+      userName: 'Ananya Patel',
+      userAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80',
+      rating: 4,
+      categories: { hygiene: 4, safety: 5, comfort: 4, value: 5 },
+      locality: 'Navi Mumbai',
+      placeName: 'Palm Breeze Resort',
+      comment: 'Super fast navigation and real-time offline maps feature saved us during evening commute. Highly recommend checking out LocoGems feed!',
+      createdAt: '2026-08-09T09:15:00.000Z',
+      verified: true
+    }
   ]
 };
 
@@ -64,7 +90,9 @@ function readDb() {
       return INITIAL_DATA;
     }
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!parsed.reviews) parsed.reviews = INITIAL_DATA.reviews;
+    return parsed;
   } catch (err) {
     console.error('[DB] Read error:', err.message);
     return INITIAL_DATA;
@@ -143,5 +171,31 @@ export const dbService = {
     db.itineraries.unshift(newItin);
     writeDb(db);
     return newItin;
+  },
+
+  // Reviews
+  getReviews() {
+    return readDb().reviews || [];
+  },
+
+  addReview(review) {
+    const db = readDb();
+    const newReview = {
+      id: `rev-${Date.now()}`,
+      userName: review.userName || 'Verified Traveler',
+      userAvatar: review.userAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+      rating: Number(review.rating) || 5,
+      categories: review.categories || { hygiene: 5, safety: 5, comfort: 5, value: 5 },
+      locality: review.locality || 'Navi Mumbai',
+      placeName: review.placeName || 'RoamPulse AI Experience',
+      comment: review.comment || '',
+      createdAt: new Date().toISOString(),
+      verified: true
+    };
+    if (!db.reviews) db.reviews = [];
+    db.reviews.unshift(newReview);
+    writeDb(db);
+    return newReview;
   }
 };
+

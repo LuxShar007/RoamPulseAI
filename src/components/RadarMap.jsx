@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { LocateFixed } from 'lucide-react';
+import { LocateFixed, Radio, Zap } from 'lucide-react';
 import PinBottomSheet from './PinBottomSheet';
 import { mockData } from '../data/mockData.js';
+import { useFramePacing } from '../utils/frameScheduler.js';
+
 
 // ─── Custom DivIcon Makers ────────────────────────────────────────────────────
 function makeDivIcon(emoji, color, shadowColor) {
@@ -57,7 +59,15 @@ export default function RadarMap({ medicalHubs, washrooms, stays, locogems, user
 
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedPin, setSelectedPin] = useState(null);
+  const [sweepAngle, setSweepAngle] = useState(0);
   const userPos = userCenter || DEFAULT_CENTER;
+
+  // 240Hz Frame Scheduler integration for smooth radar sweep rotation
+  const frameStats = useFramePacing((frameState) => {
+    // Advance sweep angle based on dtRatio for frame-rate independent rotation
+    setSweepAngle((prev) => (prev + 1.2 * frameState.dtRatio) % 360);
+  });
+
 
   // Initialise Leaflet Map
   useEffect(() => {
@@ -207,7 +217,50 @@ export default function RadarMap({ medicalHubs, washrooms, stays, locogems, user
       {/* Leaflet map container */}
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%', minHeight: 'calc(100vh - 70px)', zIndex: 1 }} />
 
+      {/* 240Hz Radar Sweep HUD Telemetry Overlay */}
+      <div style={{
+        position: 'absolute',
+        top: '68px',
+        left: '16px',
+        zIndex: 400,
+        padding: '6px 12px',
+        borderRadius: '14px',
+        background: 'rgba(6, 11, 18, 0.85)',
+        border: '1px solid var(--border-subtle)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        color: 'var(--accent-cyan)',
+        fontSize: '11px',
+        fontWeight: '800'
+      }}>
+        <div style={{
+          width: '14px',
+          height: '14px',
+          borderRadius: '50%',
+          border: '1.5px stroke var(--accent-cyan)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative'
+        }}>
+          <Radio
+            size={12}
+            style={{
+              transform: `rotate(${sweepAngle}deg)`,
+              transition: 'transform 0.004s linear'
+            }}
+          />
+        </div>
+        <span>240Hz RADAR SWEEP ACTIVE</span>
+        <span style={{ fontSize: '10px', color: 'var(--text-secondary)', background: 'var(--bg-card)', padding: '2px 6px', borderRadius: '6px' }}>
+          {frameStats.frameTimeMs}ms/frame
+        </span>
+      </div>
+
       {/* Top Filter Chips */}
+
       <div style={{
         position: 'absolute',
         top: '16px',

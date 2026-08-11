@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Radio, Compass, Bookmark, User } from 'lucide-react';
+import { Home, Radio, Compass, Bookmark, Star, User } from 'lucide-react';
 
 export default function Navigation({ activeTab, onSelectTab }) {
   return (
@@ -8,7 +8,7 @@ export default function Navigation({ activeTab, onSelectTab }) {
         onClick={() => onSelectTab('home')}
         className={`nav-item ${activeTab === 'home' ? 'active' : ''}`}
       >
-        <Home size={22} />
+        <Home size={20} />
         <span>Home</span>
       </button>
 
@@ -16,7 +16,7 @@ export default function Navigation({ activeTab, onSelectTab }) {
         onClick={() => onSelectTab('radar')}
         className={`nav-item ${activeTab === 'radar' ? 'active' : ''}`}
       >
-        <Radio size={22} />
+        <Radio size={20} />
         <span>Radar</span>
       </button>
 
@@ -24,7 +24,7 @@ export default function Navigation({ activeTab, onSelectTab }) {
         onClick={() => onSelectTab('itinerary')}
         className={`nav-item ${activeTab === 'itinerary' ? 'active' : ''}`}
       >
-        <Compass size={22} />
+        <Compass size={20} />
         <span>Itinerary</span>
       </button>
 
@@ -32,15 +32,23 @@ export default function Navigation({ activeTab, onSelectTab }) {
         onClick={() => onSelectTab('saved')}
         className={`nav-item ${activeTab === 'saved' ? 'active' : ''}`}
       >
-        <Bookmark size={22} />
+        <Bookmark size={20} />
         <span>Saved</span>
+      </button>
+
+      <button
+        onClick={() => onSelectTab('review')}
+        className={`nav-item ${activeTab === 'review' ? 'active' : ''}`}
+      >
+        <Star size={20} />
+        <span>Review</span>
       </button>
 
       <button
         onClick={() => onSelectTab('profile')}
         className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
       >
-        <User size={22} />
+        <User size={20} />
         <span>Profile</span>
       </button>
     </nav>

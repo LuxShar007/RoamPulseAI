@@ -29,6 +29,8 @@ import LiveNavigationModal from './components/LiveNavigationModal';
 import ItineraryPlanner from './components/ItineraryPlanner';
 import BudgetAnalyticsView from './components/BudgetAnalyticsView';
 import IPhone17ProMaxFrame from './components/IPhone17ProMaxFrame';
+import ReviewPage from './components/ReviewPage';
+
 
 // Services & Data
 import { mockData } from './data/mockData';
@@ -449,6 +451,15 @@ export default function App() {
         );
       }
 
+      if (activeTab === 'review') {
+        return (
+          <ReviewPage
+            localityName={localityName}
+            onSubmitSuccess={() => fetchDbItineraries()}
+          />
+        );
+      }
+
       if (activeTab === 'profile') {
         return (
           <UserProfile
@@ -457,11 +468,13 @@ export default function App() {
             onOpenBudget={() => setShowBudget(true)}
             onOpenOfflineMaps={() => setShowOfflineMaps(true)}
             onOpenPoliceHelp={() => setShowPoliceHelp(true)}
+            onOpenReview={() => setActiveTab('review')}
             onLogout={handleLogout}
           />
         );
       }
     };
+
 
     return (
       <div id="app-viewport" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
