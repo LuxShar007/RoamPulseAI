@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { LocateFixed, Radio, Zap } from 'lucide-react';
+import { LocateFixed, Radio, Zap, ChevronRight } from 'lucide-react';
 import PinBottomSheet from './PinBottomSheet';
 import { mockData } from '../data/mockData.js';
 import { useFramePacing } from '../utils/frameScheduler.js';
@@ -26,7 +26,8 @@ function makeDivIcon(emoji, color, shadowColor) {
 }
 
 const MEDICAL_ICON  = makeDivIcon('🏥', '#EF4444', 'rgba(239,68,68,0.7)');
-const WASHROOM_ICON = makeDivIcon('🚽', '#3B82F6', 'rgba(59,130,246,0.7)');
+const POLICE_ICON   = makeDivIcon('🚓', '#3B82F6', 'rgba(59,130,246,0.8)');
+const WASHROOM_ICON = makeDivIcon('🚽', '#06B6D4', 'rgba(6,182,212,0.7)');
 const STAY_ICON     = makeDivIcon('🏠', '#22C55E', 'rgba(34,197,94,0.7)');
 const FOOD_ICON     = makeDivIcon('🍲', '#F59E0B', 'rgba(245,158,11,0.7)');
 const USER_ICON     = L.divIcon({
@@ -48,19 +49,42 @@ const USER_ICON     = L.divIcon({
   className: ''
 });
 
-const DEFAULT_CENTER = [19.033, 73.029];
+const DEFAULT_CENTER = [18.989, 73.117];
 const DARK_TILE_URL = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 const DARK_TILE_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>';
 
-export default function RadarMap({ medicalHubs, washrooms, stays, locogems, userCenter, onNavigate }) {
+export default function RadarMap({ medicalHubs, washrooms, policeStations, stays, locogems, userCenter, onNavigate }) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersGroupRef = useRef(null);
+  const filterScrollRef = useRef(null);
 
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedPin, setSelectedPin] = useState(null);
   const [sweepAngle, setSweepAngle] = useState(0);
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftState, setScrollLeftState] = useState(0);
+
   const userPos = userCenter || DEFAULT_CENTER;
+
+  const handleMouseDown = (e) => {
+    setIsMouseDown(true);
+    if (!filterScrollRef.current) return;
+    setStartX(e.pageX - filterScrollRef.current.offsetLeft);
+    setScrollLeftState(filterScrollRef.current.scrollLeft);
+  };
+
+  const handleMouseLeave = () => setIsMouseDown(false);
+  const handleMouseUp = () => setIsMouseDown(false);
+
+  const handleMouseMove = (e) => {
+    if (!isMouseDown || !filterScrollRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - filterScrollRef.current.offsetLeft;
+    const walk = (x - startX) * 1.8;
+    filterScrollRef.current.scrollLeft = scrollLeftState - walk;
+  };
 
   // 240Hz Frame Scheduler integration for smooth radar sweep rotation
   const frameStats = useFramePacing((frameState) => {
@@ -119,14 +143,35 @@ export default function RadarMap({ medicalHubs, washrooms, stays, locogems, user
     `);
     markersGroup.addLayer(userMarker);
 
+    const showPolice    = activeFilter === 'all' || activeFilter === 'police';
     const showMedical   = activeFilter === 'all' || activeFilter === 'medical';
     const showWashrooms = activeFilter === 'all' || activeFilter === 'washroom';
     const showStays     = activeFilter === 'all' || activeFilter === 'stays';
     const showFood      = activeFilter === 'all' || activeFilter === 'food';
 
+    // Police Stations & Emergency Help Desk
+    if (showPolice) {
+      (policeStations || []).forEach((police) => {
+        const lat = police.lat ?? police.latitude;
+        const lng = police.lng ?? police.longitude;
+        if (!lat || !lng) return;
+
+        const marker = L.marker([lat, lng], { icon: POLICE_ICON });
+        marker.bindPopup(`
+          <div style="padding:4px 0;">
+            <div style="font-weight:800; font-size:13px; color:#3B82F6; margin-bottom:4px;">🚓 ${police.name}</div>
+            <div style="font-size:11px; color:#94A3B8; margin-bottom:6px;">${police.distance || police.location || '24/7 Emergency Police Station'}</div>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" rel="noopener noreferrer" style="display:block; margin-top:6px; text-align:center; font-size:11px; color:#00F2FE; font-weight:700;">Emergency Directions →</a>
+          </div>
+        `);
+        marker.on('click', () => setSelectedPin({ ...police, pinType: 'police' }));
+        markersGroup.addLayer(marker);
+      });
+    }
+
     // Medical Hubs
     if (showMedical) {
-      (medicalHubs || mockData.medicalHubs).forEach((hub) => {
+      (medicalHubs || []).forEach((hub) => {
         const lat = hub.lat ?? hub.latitude;
         const lng = hub.lng ?? hub.longitude;
         if (!lat || !lng) return;
@@ -146,7 +191,7 @@ export default function RadarMap({ medicalHubs, washrooms, stays, locogems, user
 
     // Washrooms
     if (showWashrooms) {
-      (washrooms || mockData.washrooms).forEach((wash) => {
+      (washrooms || []).forEach((wash) => {
         const lat = wash.lat ?? wash.latitude;
         const lng = wash.lng ?? wash.longitude;
         if (!lat || !lng) return;
@@ -166,7 +211,7 @@ export default function RadarMap({ medicalHubs, washrooms, stays, locogems, user
 
     // Stays
     if (showStays) {
-      (stays || mockData.stays).forEach((stay) => {
+      (stays || []).forEach((stay) => {
         const lat = stay.lat ?? stay.latitude;
         const lng = stay.lng ?? stay.longitude;
         if (!lat || !lng) return;
@@ -186,7 +231,7 @@ export default function RadarMap({ medicalHubs, washrooms, stays, locogems, user
 
     // LocoGems / Dining Food Spots
     if (showFood) {
-      (locogems || mockData.locoGems).forEach((food) => {
+      (locogems || []).forEach((food) => {
         const lat = food.lat ?? food.latitude;
         const lng = food.lng ?? food.longitude;
         if (!lat || !lng) return;
@@ -204,7 +249,7 @@ export default function RadarMap({ medicalHubs, washrooms, stays, locogems, user
       });
     }
 
-  }, [activeFilter, medicalHubs, washrooms, stays, locogems, userPos]);
+  }, [activeFilter, medicalHubs, washrooms, policeStations, stays, locogems, userPos]);
 
   const handleRecenter = () => {
     if (mapInstanceRef.current) {
@@ -217,87 +262,81 @@ export default function RadarMap({ medicalHubs, washrooms, stays, locogems, user
       {/* Leaflet map container */}
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%', minHeight: 'calc(100vh - 70px)', zIndex: 1 }} />
 
-      {/* 240Hz Radar Sweep HUD Telemetry Overlay */}
-      <div style={{
-        position: 'absolute',
-        top: '68px',
-        left: '16px',
-        zIndex: 400,
-        padding: '6px 12px',
-        borderRadius: '14px',
-        background: 'rgba(6, 11, 18, 0.85)',
-        border: '1px solid var(--border-subtle)',
-        backdropFilter: 'blur(10px)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        color: 'var(--accent-cyan)',
-        fontSize: '11px',
-        fontWeight: '800'
-      }}>
+
+
+      {/* Top Filter Chips Container (Smooth Drag & Touch Swipe) */}
+      <div style={{ position: 'absolute', top: '16px', left: '16px', right: '16px', zIndex: 400 }}>
+        {/* Floating Slide Indicator Pill */}
         <div style={{
-          width: '14px',
-          height: '14px',
-          borderRadius: '50%',
-          border: '1.5px stroke var(--accent-cyan)',
+          position: 'absolute',
+          right: '4px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 420,
+          background: 'linear-gradient(to left, rgba(6,11,18,0.95) 60%, rgba(6,11,18,0))',
+          padding: '6px 10px 6px 20px',
+          borderRadius: '0 20px 20px 0',
+          pointerEvents: 'none',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative'
+          gap: '2px',
+          color: 'var(--accent-cyan)',
+          fontSize: '10px',
+          fontWeight: '800'
         }}>
-          <Radio
-            size={12}
-            style={{
-              transform: `rotate(${sweepAngle}deg)`,
-              transition: 'transform 0.004s linear'
-            }}
-          />
+          <span>Swipe</span>
+          <ChevronRight size={13} />
         </div>
-        <span>240Hz RADAR SWEEP ACTIVE</span>
-        <span style={{ fontSize: '10px', color: 'var(--text-secondary)', background: 'var(--bg-card)', padding: '2px 6px', borderRadius: '6px' }}>
-          {frameStats.frameTimeMs}ms/frame
-        </span>
-      </div>
 
-      {/* Top Filter Chips */}
-
-      <div style={{
-        position: 'absolute',
-        top: '16px',
-        left: '16px',
-        right: '16px',
-        zIndex: 400,
-        display: 'flex',
-        gap: '8px',
-        overflowX: 'auto',
-        scrollbarWidth: 'none'
-      }}>
-        {[
-          { id: 'all', label: 'All Markers', color: '#00F2FE' },
-          { id: 'stays', label: '🏠 Stays', color: '#22C55E' },
-          { id: 'food', label: '🍲 Food & Street Vendors', color: '#F59E0B' },
-          { id: 'medical', label: '🏥 Medical', color: '#EF4444' },
-          { id: 'washroom', label: '🚽 Washrooms', color: '#3B82F6' },
-        ].map(filter => (
-          <button
-            key={filter.id}
-            onClick={() => setActiveFilter(filter.id)}
-            style={{
-              padding: '8px 14px',
-              borderRadius: '20px',
-              background: activeFilter === filter.id ? filter.color : 'rgba(18, 28, 42, 0.9)',
-              color: activeFilter === filter.id ? '#060B12' : '#FFF',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              backdropFilter: 'blur(8px)',
-              fontWeight: '700',
-              fontSize: '12px',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap'
-            }}
-          >
-            {filter.label}
-          </button>
-        ))}
+        <div
+          ref={filterScrollRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeave}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          style={{
+            display: 'flex',
+            gap: '8px',
+            overflowX: 'scroll',
+            WebkitOverflowScrolling: 'touch',
+            scrollSnapType: 'x mandatory',
+            userSelect: 'none',
+            cursor: isMouseDown ? 'grabbing' : 'grab',
+            paddingRight: '60px',
+            scrollbarWidth: 'none'
+          }}
+        >
+          {[
+            { id: 'all', label: 'All Markers', color: '#00F2FE' },
+            { id: 'police', label: '🚓 Police & Help', color: '#3B82F6' },
+            { id: 'medical', label: '🏥 Medical & Clinics', color: '#EF4444' },
+            { id: 'washroom', label: '🚽 Washrooms & Utilities', color: '#06B6D4' },
+            { id: 'stays', label: '🏠 Stays', color: '#22C55E' },
+            { id: 'food', label: '🍲 Food & Street Vendors', color: '#F59E0B' },
+          ].map(filter => (
+            <button
+              key={filter.id}
+              onClick={() => setActiveFilter(filter.id)}
+              style={{
+                padding: '8px 14px',
+                borderRadius: '20px',
+                background: activeFilter === filter.id ? filter.color : 'rgba(18, 28, 42, 0.92)',
+                color: activeFilter === filter.id ? '#060B12' : '#FFF',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(8px)',
+                fontWeight: '700',
+                fontSize: '12px',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                scrollSnapAlign: 'start',
+                flexShrink: 0,
+                boxShadow: activeFilter === filter.id ? `0 0 14px ${filter.color}` : 'none'
+              }}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Re-center Button */}

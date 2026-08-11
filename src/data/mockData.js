@@ -1,4 +1,28 @@
-export const mockData = {
+import { generateGoogleReviews } from '../services/googleReviewEngine.js';
+
+function enrichItem(item, category, idx) {
+  const gData = generateGoogleReviews(item.name, category, (idx + 1) * 37);
+  return {
+    ...item,
+    rating: gData.googleRating,
+    googleRating: gData.googleRating,
+    googleReviewsCount: gData.googleReviewsCount,
+    googleReviews: gData.googleReviews,
+    aiMetrics: {
+      hygiene: gData.aiStats.hygieneScore,
+      safety: gData.aiStats.safetyIndex,
+      peacefulness: gData.aiStats.peaceIndex,
+      valueForMoney: gData.aiStats.valueForMoneyScore,
+      expectedSpend: item.price || 1200
+    },
+    hygiene: gData.aiStats.hygieneScore,
+    safety: gData.aiStats.safetyIndex,
+    peacefulness: gData.aiStats.peaceIndex,
+    aiInsights: gData.aiStats.reviewInsights
+  };
+}
+
+const rawMockData = {
   user: {
     name: "Sharv",
     location: "Navi Mumbai, India",
@@ -304,4 +328,13 @@ export const mockData = {
       "Eat at LocoGems street food stalls verified above 85% hygiene to save ₹400/day."
     ]
   }
+};
+
+export const mockData = {
+  ...rawMockData,
+  stays: (rawMockData.stays || []).map((item, idx) => enrichItem(item, 'stays', idx)),
+  dining: (rawMockData.dining || []).map((item, idx) => enrichItem(item, 'dining', idx)),
+  locoGems: (rawMockData.locoGems || []).map((item, idx) => enrichItem(item, 'locogems', idx)),
+  medicalHubs: (rawMockData.medicalHubs || []).map((item, idx) => enrichItem(item, 'medicalHubs', idx)),
+  washrooms: (rawMockData.washrooms || []).map((item, idx) => enrichItem(item, 'washrooms', idx))
 };

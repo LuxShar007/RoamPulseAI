@@ -1,9 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronLeft, Share2, Heart, MapPin, Sparkles, Navigation, ArrowRight, Star, Volume2 } from 'lucide-react';
 import AIReviewModal from './AIReviewModal';
 import VoiceAssistantModal from './VoiceAssistantModal';
 import LiveNavigationModal from './LiveNavigationModal';
 import { formatPrice } from '../utils/currency';
+import { generateGoogleReviews } from '../services/googleReviewEngine.js';
+
+function getPlaceSeed(name = '') {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash << 5) - hash + name.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash) || 42;
+}
 
 async function fetchLiveStats(placeName, placeLocation) {
   try {
@@ -25,36 +35,39 @@ export default function AIStatCardView({ stay, onBack, onNavigate: _onNavigate, 
   const [saved, setSaved] = useState(false);
   const [liveData, setLiveData] = useState(null);
 
-  const images = stay.gallery || [stay.image];
-  const baseMetics = stay.aiMetrics || { hygiene: 94, safety: 95, peacefulness: 88, valueForMoney: 4.6, expectedSpend: 1200 };
+  const defaultImg = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80';
+  const images = (stay?.gallery && stay.gallery.length > 0) ? stay.gallery : [stay?.image || defaultImg];
+  
+  const seedId = getPlaceSeed(stay?.name || 'RoamPulse Place');
+  const generatedData = useMemo(() => {
+    return generateGoogleReviews(stay?.name || 'Place', stay?.category || 'stays', seedId);
+  }, [stay?.name, stay?.category, seedId]);
 
   const metrics = {
-    hygiene: liveData?.aiStats?.hygieneScore ?? baseMetics.hygiene,
-    safety: liveData?.aiStats?.safetyIndex ?? baseMetics.safety,
-    peacefulness: liveData?.aiStats?.peaceIndex ?? baseMetics.peacefulness,
-    valueForMoney: liveData?.aiStats?.valueForMoneyScore ?? baseMetics.valueForMoney,
-    expectedSpend: stay.price || baseMetics.expectedSpend
+    hygiene: liveData?.aiStats?.hygieneScore ?? stay?.hygiene ?? generatedData.aiStats.hygieneScore,
+    safety: liveData?.aiStats?.safetyIndex ?? stay?.safety ?? generatedData.aiStats.safetyIndex,
+    peacefulness: liveData?.aiStats?.peaceIndex ?? stay?.peacefulness ?? generatedData.aiStats.peaceIndex,
+    valueForMoney: liveData?.aiStats?.valueForMoneyScore ?? generatedData.aiStats.valueForMoneyScore,
+    expectedSpend: stay?.price || stay?.aiMetrics?.expectedSpend || 1200
   };
 
-  const resolvedInsights = liveData?.aiStats?.reviewInsights ?? stay.aiInsights ?? [
-    'Consistently clean and sanitized facilities verified by RoamPulse AI.',
-    '24/7 security monitored locality.',
-    'Quiet ambient atmosphere.'
-  ];
+  const resolvedInsights = liveData?.aiStats?.reviewInsights ?? stay?.aiInsights ?? generatedData.aiStats.reviewInsights;
 
-  const googleRating = liveData?.googleRating ?? stay.googleRating ?? stay.rating ?? 4.7;
-  const reviewsCount = liveData?.googleReviewsCount ?? stay.googleReviewsCount ?? 142;
-  const googleReviews = liveData?.googleReviews ?? stay.googleReviews ?? [];
+  const googleRating = liveData?.googleRating ?? stay?.googleRating ?? stay?.rating ?? generatedData.googleRating;
+  const reviewsCount = liveData?.googleReviewsCount ?? stay?.googleReviewsCount ?? generatedData.googleReviewsCount;
+  const googleReviews = (liveData?.googleReviews?.length) ? liveData.googleReviews : ((stay?.googleReviews?.length) ? stay.googleReviews : generatedData.googleReviews);
 
   useEffect(() => {
     let cancelled = false;
-    fetchLiveStats(stay.name, stay.location).then(data => {
-      if (!cancelled) {
-        setLiveData(data);
-      }
-    });
+    if (stay?.name) {
+      fetchLiveStats(stay.name, stay.location).then(data => {
+        if (!cancelled) {
+          setLiveData(data);
+        }
+      });
+    }
     return () => { cancelled = true; };
-  }, [stay.name, stay.location]);
+  }, [stay?.name, stay?.location]);
 
   return (
     <div style={{

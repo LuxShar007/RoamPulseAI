@@ -1,14 +1,24 @@
 import React from 'react';
 import { Sparkles, CheckCircle2, AlertTriangle, X } from 'lucide-react';
+import { generateGoogleReviews } from '../services/googleReviewEngine.js';
 
-export default function AIReviewModal({ stay, onClose }) {
-  const insights = stay.aiInsights || stay.aiMetrics?.reviewInsights || [
-    "Consistently clean and sanitized washroom facilities.",
-    "24/7 security guard at entrance makes it super safe for solo tourists.",
-    "Verified high hygiene standards and fresh regional dining."
-  ];
+function getPlaceSeed(name = '') {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash << 5) - hash + name.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash) || 42;
+}
 
-  const googleReviews = stay.googleReviews || [];
+export default function AIReviewModal({ stay = {}, onClose }) {
+  const seedId = getPlaceSeed(stay?.name || 'RoamPulse Place');
+  const generatedData = generateGoogleReviews(stay?.name || 'Place', stay?.category || 'stays', seedId);
+
+  const insights = stay?.aiInsights || stay?.aiMetrics?.reviewInsights || generatedData.aiStats.reviewInsights;
+  const googleReviews = (stay?.googleReviews && stay.googleReviews.length > 0) ? stay.googleReviews : generatedData.googleReviews;
+  const googleRating = stay?.googleRating || stay?.rating || generatedData.googleRating;
+  const reviewsCount = stay?.googleReviewsCount || generatedData.googleReviewsCount;
 
   return (
     <div className="modal-overlay">
@@ -30,7 +40,7 @@ export default function AIReviewModal({ stay, onClose }) {
             <div>
               <h2 style={{ fontSize: '20px', fontWeight: '700' }}>Google Reviews & AI Insights</h2>
               <p style={{ fontSize: '12px', color: '#94A3B8' }}>
-                ⭐ {stay.googleRating || stay.rating || 4.7} ({stay.googleReviewsCount || 140}+ Google Reviews)
+                ⭐ {googleRating} ({reviewsCount}+ Google Reviews)
               </p>
             </div>
           </div>

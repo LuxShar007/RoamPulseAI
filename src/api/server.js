@@ -4,6 +4,7 @@ import cors from 'cors';
 import { mockData } from '../data/mockData.js';
 import { dbService } from '../services/dbService.js';
 import { analyzeReviewsSentiment } from '../services/sentimentEngine.js';
+import { generateGoogleReviews } from '../services/googleReviewEngine.js';
 import { fetchLiveWeatherAndAQI } from '../services/weatherService.js';
 import {
   fetchOSMPlaceDetails,
@@ -152,32 +153,29 @@ app.get('/api/places', (_req, res) => {
 });
 
 app.get('/api/google/place', async (req, res) => {
-  const { query } = req.query;
+  const { query, category = 'stays' } = req.query;
   if (!query) return res.status(400).json({ success: false, error: 'query parameter is required' });
   try {
-    const osmData = await fetchOSMPlaceDetails(query);
+    const osmData = await fetchOSMPlaceDetails(query, category);
     if (osmData) return res.json({ success: true, source: 'openstreetmap', data: osmData });
-    const fallbackStats = analyzeReviewsSentiment([]);
+
+    const placeDetails = generateGoogleReviews(query, category);
     return res.json({
       success: true,
-      source: 'fallback',
+      source: 'synthesized_place_nlp',
       data: {
         osmId: null,
         name: query,
-        formattedAddress: 'Navi Mumbai, India',
-        lat: 19.033,
-        lng: 73.029,
-        googleRating: 4.5,
+        formattedAddress: `${query}, Panvel Locality`,
+        lat: 18.989,
+        lng: 73.117,
+        googleRating: placeDetails.googleRating,
+        googleReviewsCount: placeDetails.googleReviewsCount,
+        googleReviews: placeDetails.googleReviews,
         openNow: true,
         photoUrl: null,
-        rawReviews: [],
-        aiStats: {
-          hygieneScore: fallbackStats.hygieneScore,
-          safetyIndex: fallbackStats.safetyIndex,
-          peaceIndex: fallbackStats.peaceIndex,
-          valueForMoneyScore: fallbackStats.valueForMoneyScore,
-          reviewInsights: fallbackStats.bulletSummaries
-        }
+        rawReviews: placeDetails.rawReviews,
+        aiStats: placeDetails.aiStats
       }
     });
   } catch {

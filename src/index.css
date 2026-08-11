@@ -4,6 +4,51 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+html, body {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* ── 240Hz ProMotion Hardware Acceleration & GPU Layering ── */
+.glass-card, .btn-primary, .studio-pill-btn, .modal-content, .nav-item, button, input, select {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform, opacity;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button:active, .btn-primary:active, .studio-pill-btn:active, .category-chip:active {
+  transform: scale(0.96) translateZ(0) !important;
+  transition-duration: 0.08s !important;
+}
+
+/* Custom 240Hz Glass Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan, #00E5C0);
 }
 
 :root, [data-theme="emerald"] {
@@ -480,16 +525,34 @@ input::placeholder { color: var(--text-muted); }
   color: var(--accent-cyan);
 }
 
+/* ── 240Hz Modal & Overlay Spring Animations ── */
+@keyframes modalPop240Hz {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(16px) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) translateZ(0);
+  }
+}
+
+@keyframes fadeIn240Hz {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
 /* Modal overlay */
 .modal-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(6, 10, 13, 0.94);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(6, 10, 13, 0.92);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   z-index: 400;
   display: flex;
   align-items: flex-end;
+  animation: fadeIn240Hz 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .modal-content {
@@ -500,4 +563,86 @@ input::placeholder { color: var(--text-muted); }
   width: 100%;
   max-height: 80svh;
   overflow-y: auto;
+  animation: modalPop240Hz 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ─── Studio Outer Workspace UI Styles ─── */
+.studio-canvas-root {
+  width: 100%;
+  min-height: 100vh;
+  background: #05080C;
+  background-image: 
+    radial-gradient(circle at 50% 30%, var(--studio-aura, rgba(0, 229, 192, 0.12)) 0%, transparent 65%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justifyContent: center;
+  padding: 64px 20px 24px 20px;
+  position: relative;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+}
+
+.studio-glow-orb {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 620px;
+  height: 920px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--studio-aura, rgba(0, 229, 192, 0.18)) 0%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  animation: studioPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes studioPulse {
+  0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
+  100% { transform: translate(-50%, -50%) scale(1.08); opacity: 1; }
+}
+
+.studio-glass-bar {
+  background: rgba(10, 16, 22, 0.82) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.studio-pill-btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.studio-pill-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.studio-hud-card {
+  background: rgba(10, 16, 22, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  z-index: 10;
+  transition: all 0.25s ease;
+}
+
+.studio-hud-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+/* Hide floating side cards on small screen height / width */
+@media (max-width: 1200px) {
+  .studio-hud-side {
+    display: none !important;
+  }
+}

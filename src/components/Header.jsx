@@ -18,7 +18,11 @@ export default function Header({
   return (
     <div style={{ padding: '44px 20px 8px 20px', background: 'var(--bg-dark)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div
+          onClick={onOpenSearch}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+          title="Tap to change or search locality"
+        >
           <div style={{
             width: '32px',
             height: '32px',

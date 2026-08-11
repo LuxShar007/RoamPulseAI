@@ -59,8 +59,8 @@ export default function App() {
   const [theme, setTheme] = useState('emerald');
 
   // Real-Time Locality Data & Weather State
-  const [userPos, setUserPos] = useState([19.033, 73.029]);
-  const [localityName, setLocalityName] = useState('Navi Mumbai');
+  const [userPos, setUserPos] = useState([18.989, 73.117]);
+  const [localityName, setLocalityName] = useState('Panvel');
   const [weatherData, setWeatherData] = useState(null);
   const [dbItineraries, setDbItineraries] = useState([]);
   const [liveData, setLiveData] = useState({
@@ -89,15 +89,33 @@ export default function App() {
   // ─── Fetch SQLite DB Saved Itineraries ──────────────────────────────────
 
   const fetchDbItineraries = async () => {
+    let localSaved = [];
+    try {
+      localSaved = JSON.parse(localStorage.getItem('roampulse_itineraries') || '[]');
+    } catch {
+      localSaved = [];
+    }
+
     try {
       const res = await fetch('/api/db/itineraries');
-      const json = await res.json();
-      if (json?.data) {
-        setDbItineraries(json.data);
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.data?.length) {
+          const combined = [...json.data];
+          localSaved.forEach(item => {
+            if (!combined.some(c => c.id === item.id)) {
+              combined.push(item);
+            }
+          });
+          setDbItineraries(combined);
+          return;
+        }
       }
     } catch {
-      // Graceful fallback
+      // Backend offline fallback
     }
+
+    setDbItineraries(localSaved);
   };
 
   useEffect(() => {
@@ -124,6 +142,7 @@ export default function App() {
           dining: data.dining || [],
           washrooms: data.washrooms || [],
           medicalHubs: data.medicalHubs || [],
+          policeStations: data.policeStations || [],
           loading: false
         });
       } else {
@@ -143,16 +162,66 @@ export default function App() {
           setUserPos([lat, lng]);
           fetchLiveLocality(lat, lng);
         },
-        () => fetchLiveLocality(19.033, 73.029)
+        () => fetchLiveLocality(18.989, 73.117),
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
       );
     } else {
-      fetchLiveLocality(19.033, 73.029);
+      fetchLiveLocality(18.989, 73.117);
     }
   }, []);
 
-  const handleSelectSearchedLocality = async (queryText) => {
-    setSearchQuery(queryText);
+  const handleSelectSearchedLocality = async (itemOrText) => {
     setShowSearch(false);
+
+    // If a specific item object was selected
+    if (typeof itemOrText === 'object' && itemOrText !== null) {
+      if (itemOrText.searchType === 'stay') {
+        setSelectedStay(itemOrText);
+      } else {
+        setNavTarget(itemOrText);
+      }
+      return;
+    }
+
+    const queryText = String(itemOrText || '').trim();
+    if (!queryText) return;
+    setSearchQuery(queryText);
+
+    // Handle filter pills
+    if (queryText.toLowerCase() === 'vegetarian') {
+      setActiveTab('home');
+      setActiveCategory('dining');
+      return;
+    }
+    if (queryText.toLowerCase() === 'hospitals' || queryText.toLowerCase() === 'clean restrooms') {
+      setActiveTab('radar');
+      return;
+    }
+    if (queryText.toLowerCase() === 'co-working' || queryText.toLowerCase() === 'ev charging') {
+      setActiveTab('home');
+      setActiveCategory('stays');
+      return;
+    }
+
+    // Geocode & fetch locality data from Nominatim / API
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(queryText)}&format=json&limit=1`, {
+        headers: { 'User-Agent': 'RoamPulseAI/1.0' }
+      });
+      const data = await res.json();
+      if (data && data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lng = parseFloat(data[0].lon);
+        const name = data[0].display_name.split(',')[0];
+        setUserPos([lat, lng]);
+        setLocalityName(name || queryText);
+        fetchLiveLocality(lat, lng);
+        return;
+      }
+    } catch {
+      // Fallback to local server geocoder
+    }
+
     try {
       const res = await fetch(`/api/google/place?query=${encodeURIComponent(queryText)}`);
       const json = await res.json();
@@ -170,6 +239,30 @@ export default function App() {
 
   // SQLite Persistence Save Handlers
   const handleSaveItinerary = async (plan) => {
+    if (!plan || !plan.length) return;
+
+    const newItinerary = {
+      id: Date.now(),
+      locality: localityName,
+      days: plan.length,
+      vibe: 'PEACE',
+      budget: '₹3,000 - ₹6,000',
+      planJson: plan,
+      created_at: new Date().toISOString()
+    };
+
+    // 1. Instant React state update
+    setDbItineraries(prev => [newItinerary, ...prev]);
+
+    // 2. Persist to localStorage
+    try {
+      const stored = JSON.parse(localStorage.getItem('roampulse_itineraries') || '[]');
+      localStorage.setItem('roampulse_itineraries', JSON.stringify([newItinerary, ...stored]));
+    } catch (e) {
+      console.error('LocalStorage itinerary error:', e);
+    }
+
+    // 3. POST to backend SQLite endpoint
     try {
       await fetch('/api/db/itineraries', {
         method: 'POST',
@@ -184,7 +277,7 @@ export default function App() {
       });
       fetchDbItineraries();
     } catch {
-      // Graceful fallback
+      // Backend offline fallback
     }
   };
 
@@ -420,6 +513,7 @@ export default function App() {
           <RadarMap
             washrooms={liveData.washrooms}
             medicalHubs={liveData.medicalHubs}
+            policeStations={liveData.policeStations}
             stays={liveData.stays}
             locogems={liveData.locogems}
             userCenter={userPos}
@@ -484,6 +578,24 @@ export default function App() {
 
         <Navigation activeTab={activeTab} onSelectTab={setActiveTab} />
 
+        {selectedStay && (
+          <div style={{ position: 'absolute', inset: 0, zIndex: 450, background: 'var(--bg-dark)' }}>
+            <AIStatCardView
+              stay={selectedStay}
+              onBack={() => setSelectedStay(null)}
+              onNavigate={(target) => {
+                setSelectedStay(null);
+                setNavTarget(target);
+              }}
+              onBook={() => {
+                setSelectedStay(null);
+                setShowBooking(true);
+              }}
+              currency={currency}
+            />
+          </div>
+        )}
+
         {showNotifications && (
           <NotificationCenter
             notifications={mockData.notifications}
@@ -496,6 +608,7 @@ export default function App() {
             recentSearches={mockData.recentSearches}
             onClose={() => setShowSearch(false)}
             onSelectQuery={handleSelectSearchedLocality}
+            liveData={liveData}
           />
         )}
 
