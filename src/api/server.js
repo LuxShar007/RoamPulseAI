@@ -75,6 +75,17 @@ app.post('/api/db/itineraries', (req, res) => {
   res.json({ success: true, data: itin });
 });
 
+// Reviews & Feedback
+app.get('/api/db/reviews', (_req, res) => {
+  res.json({ success: true, data: dbService.getReviews() });
+});
+
+app.post('/api/db/reviews', (req, res) => {
+  const review = dbService.addReview(req.body);
+  res.json({ success: true, data: review });
+});
+
+
 // ─── REAL-TIME LOCALITY API ENDPOINTS ──────────────────────────────────────────
 
 app.get('/api/live/locality', async (req, res) => {

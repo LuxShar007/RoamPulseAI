@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Settings, PiggyBank, Download, ChevronRight, LogOut, Siren } from 'lucide-react';
+import { Settings, PiggyBank, Download, ChevronRight, LogOut, Siren, Star } from 'lucide-react';
 
-export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpenOfflineMaps, onOpenPoliceHelp, onLogout }) {
+export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpenOfflineMaps, onOpenPoliceHelp, onOpenReview, onLogout }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   return (
@@ -32,6 +32,22 @@ export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpen
 
       {/* Menu Cards Wrapper */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+        {/* Write a Review & Rate Locality */}
+        <div
+          onClick={onOpenReview}
+          className="glass-card"
+          style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Star size={22} color="#FFB703" fill="#FFB703" />
+            <div>
+              <div style={{ fontWeight: '800', fontSize: '15px', color: 'var(--text-primary)' }}>Review & Rate Locality</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Share 5-star rating & community feedback</div>
+            </div>
+          </div>
+          <ChevronRight size={18} color="var(--text-muted)" />
+        </div>
+
         {/* AI Budget Optimizer */}
         <div
           onClick={onOpenBudget}
@@ -79,6 +95,7 @@ export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpen
           </div>
           <ChevronRight size={18} color="var(--text-muted)" />
         </div>
+
 
         {/* Police Assistance */}
         <div

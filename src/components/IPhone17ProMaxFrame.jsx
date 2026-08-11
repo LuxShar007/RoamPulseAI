@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Wifi, Smartphone, Sparkles, Palette, ExternalLink } from 'lucide-react';
+import { Smartphone, Sparkles, Palette, ExternalLink, Sliders, Zap } from 'lucide-react';
+import { useFramePacing } from '../utils/frameScheduler';
 
 function FigmaIcon({ size = 15 }) {
   return (
@@ -13,10 +14,75 @@ function FigmaIcon({ size = 15 }) {
   );
 }
 
+/* macOS Minimalist Line-Art Wi-Fi Icon */
+function MacOSWifiIcon({ color = '#FFFFFF', size = 15 }) {
+  return (
+    <svg width={size} height={size * 0.8} viewBox="0 0 20 16" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round">
+      <path d="M1.5 4.5C6.2 -0.5 13.8 -0.5 18.5 4.5" />
+      <path d="M4.5 8C7.5 4.8 12.5 4.8 15.5 8" />
+      <path d="M7.5 11.5C9 10 11 10 12.5 11.5" />
+      <circle cx="10" cy="14.5" r="1.2" fill={color} stroke="none" />
+    </svg>
+  );
+}
+
+/* macOS Battery Pill Indicator */
+function MacOSBatteryPill({ color = '#FFFFFF', percentage = 98 }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+      <span style={{
+        fontSize: '11px',
+        fontWeight: '700',
+        letterSpacing: '-0.2px',
+        color: color,
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+      }}>
+        {percentage}%
+      </span>
+
+      {/* macOS Pill Frame */}
+      <div style={{
+        width: '24px',
+        height: '12px',
+        borderRadius: '4.5px',
+        border: `1.5px solid ${color}`,
+        padding: '1.5px',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        background: 'rgba(0,0,0,0.1)'
+      }}>
+        {/* Inner Battery Fill */}
+        <div style={{
+          width: `${percentage}%`,
+          height: '100%',
+          background: percentage > 20 ? (color === '#FFFFFF' ? '#34D399' : color) : '#EF4444',
+          borderRadius: '2px',
+          transition: 'width 0.3s ease'
+        }} />
+
+        {/* Battery Nipple Cap */}
+        <div style={{
+          position: 'absolute',
+          right: '-4px',
+          top: '3px',
+          width: '2px',
+          height: '4px',
+          borderRadius: '0 1.5px 1.5px 0',
+          background: color
+        }} />
+      </div>
+    </div>
+  );
+}
+
 export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTheme }) {
   const [time, setTime] = useState('9:41');
   const [deviceFinish] = useState('titanium');
   const [isDynamicIslandExpanded, setIsDynamicIslandExpanded] = useState(false);
+
+  // 240Hz Dynamic Frame Pacing Telemetry
+  const frameStats = useFramePacing();
 
   const figmaDesignUrl = "https://www.figma.com/design/8RbDA2X0xEqG5NJW0pQf11/RoamPulseAI?node-id=0-1&t=w7L1KqsOf1UQdOH9-1";
 
@@ -70,7 +136,7 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
         boxSizing: 'border-box'
       }}
     >
-      {/* ── Figma Workspace Canvas Top Toolbar ── */}
+      {/* ── macOS Workspace Canvas Top Toolbar & 240Hz Telemetry ── */}
       <div style={{
         position: 'fixed',
         top: '10px',
@@ -83,7 +149,7 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
         gap: '8px',
         zIndex: 500
       }}>
-        {/* Left Badge & Figma Direct Prototype Link */}
+        {/* Left Badge & 240Hz Render Engine Telemetry */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <div style={{
             padding: '6px 14px',
@@ -103,6 +169,27 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
             <span>Figma Prototype • iPhone 17 Pro Max</span>
             <span style={{ fontSize: '10px', color: 'var(--accent-cyan)', background: 'var(--border-subtle)', padding: '2px 6px', borderRadius: '6px' }}>
               430 x 932 px
+            </span>
+          </div>
+
+          {/* 240Hz Frame Scheduler Badge */}
+          <div style={{
+            padding: '6px 14px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, rgba(0, 229, 192, 0.2) 0%, rgba(13, 35, 34, 0.95) 100%)',
+            border: '1px solid var(--accent-cyan)',
+            color: 'var(--accent-cyan)',
+            fontSize: '12px',
+            fontWeight: '800',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: '0 4px 15px rgba(0, 229, 192, 0.2)'
+          }}>
+            <Zap size={14} color="var(--accent-cyan)" />
+            <span>240Hz Engine Target • {frameStats.frameTimeMs}ms</span>
+            <span style={{ fontSize: '10px', color: '#FFF', background: 'rgba(0, 229, 192, 0.25)', padding: '2px 6px', borderRadius: '6px' }}>
+              {frameStats.fps} FPS ({frameStats.detectedHz}Hz Pacing)
             </span>
           </div>
 
@@ -192,7 +279,7 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
         transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
         boxSizing: 'border-box'
       }}>
-        {/* Left Physical Side Buttons (Action & Volume) */}
+        {/* Left Physical Side Buttons */}
         <div style={{
           position: 'absolute', left: '-13px', top: '100px', width: '3px', height: '26px',
           background: activeFinish.bezel, borderRadius: '3px 0 0 3px', zIndex: 100
@@ -223,14 +310,14 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
           display: 'flex',
           flexDirection: 'column'
         }}>
-          {/* Transparent iPhone 17 Status Bar Floating Overlay */}
+          {/* macOS Inspired System Status Bar Floating Overlay */}
           <div style={{
             position: 'absolute',
             top: 0,
             left: 0,
             right: 0,
             height: '44px',
-            padding: '10px 22px 0 22px',
+            padding: '10px 20px 0 20px',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -238,18 +325,18 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
             pointerEvents: 'none',
             background: 'transparent'
           }}>
-            {/* Live Clock */}
+            {/* Live Clock & macOS Typography */}
             <span style={{
-              fontSize: '14px',
-              fontWeight: '800',
+              fontSize: '13px',
+              fontWeight: '700',
               color: iconColor,
-              letterSpacing: '-0.2px',
+              letterSpacing: '-0.3px',
               fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif'
             }}>
               {time}
             </span>
 
-            {/* Dynamic Island Notch */}
+            {/* Dynamic Island / macOS Notch */}
             <div
               onClick={() => setIsDynamicIslandExpanded(!isDynamicIslandExpanded)}
               style={{
@@ -257,7 +344,7 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
                 top: '8px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                width: isDynamicIslandExpanded ? '200px' : '118px',
+                width: isDynamicIslandExpanded ? '210px' : '120px',
                 height: isDynamicIslandExpanded ? '36px' : '30px',
                 background: '#000000',
                 borderRadius: '20px',
@@ -269,7 +356,7 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
                 pointerEvents: 'auto',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 boxShadow: '0 4px 15px rgba(0, 0, 0, 0.8)',
-                border: '1px solid rgba(255, 255, 255, 0.12)'
+                border: '1px solid rgba(255, 255, 255, 0.14)'
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -277,7 +364,7 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
                 {isDynamicIslandExpanded && (
                   <span style={{ fontSize: '11px', color: 'var(--accent-cyan)', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <Sparkles size={12} />
-                    Pulse Active
+                    240Hz Active
                   </span>
                 )}
               </div>
@@ -291,14 +378,17 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
               </div>
             </div>
 
-            {/* Pixel-Perfect iPhone 17 Status Icons (5G Signal, Wi-Fi, Battery Pill) */}
+            {/* macOS System Status Icons (Minimalist Line-Art 5G Signal, Wi-Fi, Control Sliders, Battery Pill) */}
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '8px',
               color: iconColor
             }}>
-              {/* 5G Signal Bars */}
+              {/* macOS Control Center Indicator */}
+              <Sliders size={13} color={iconColor} style={{ opacity: 0.85 }} />
+
+              {/* macOS 5G Signal Bars */}
               <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1.5px', height: '11px' }}>
                 <div style={{ width: '2.5px', height: '3px', borderRadius: '0.5px', background: iconColor }} />
                 <div style={{ width: '2.5px', height: '5.5px', borderRadius: '0.5px', background: iconColor }} />
@@ -306,42 +396,14 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
                 <div style={{ width: '2.5px', height: '11px', borderRadius: '0.5px', background: iconColor }} />
               </div>
 
-              {/* Wi-Fi Icon */}
-              <Wifi size={14} strokeWidth={2.5} color={iconColor} />
+              {/* macOS Minimalist Wi-Fi Line-Art Icon */}
+              <MacOSWifiIcon color={iconColor} size={15} />
 
-              {/* iPhone 17 Battery Pill Indicator with 98% Badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ fontSize: '11px', fontWeight: '800', opacity: 0.9, color: iconColor }}>98%</span>
-                <div style={{
-                  width: '23px',
-                  height: '11px',
-                  borderRadius: '3.5px',
-                  border: `1.5px solid ${iconColor}`,
-                  padding: '1.5px',
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center'
-                }}>
-                  <div style={{
-                    width: '85%',
-                    height: '100%',
-                    background: iconColor,
-                    borderRadius: '1.5px'
-                  }} />
-                  {/* Battery Nipple Cap */}
-                  <div style={{
-                    position: 'absolute',
-                    right: '-3.5px',
-                    top: '2.5px',
-                    width: '2px',
-                    height: '4px',
-                    borderRadius: '0 1px 1px 0',
-                    background: iconColor
-                  }} />
-                </div>
-              </div>
+              {/* macOS Pill Battery Indicator */}
+              <MacOSBatteryPill color={iconColor} percentage={98} />
             </div>
           </div>
+
 
           {/* Children Screen Content - Seamless 100% Height */}
           <div style={{
