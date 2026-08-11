@@ -19,6 +19,7 @@ import FilterModal from './components/FilterModal';
 import BookingConfirmation from './components/BookingConfirmation';
 import SavedPlaces from './components/SavedPlaces';
 import UserProfile from './components/UserProfile';
+import PoliceHelp from './components/PoliceHelp';
 import BudgetOptimizer from './components/BudgetOptimizer';
 import OfflineMaps from './components/OfflineMaps';
 import SettingsPage from './components/SettingsPage';
@@ -78,6 +79,7 @@ export default function App() {
   const [showBudget, setShowBudget] = useState(false);
   const [showOfflineMaps, setShowOfflineMaps] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showPoliceHelp, setShowPoliceHelp] = useState(false);
   const [showNavPreview, setShowNavPreview] = useState(false);
   const [showItineraryModal, setShowItineraryModal] = useState(false);
   const [navTarget, setNavTarget] = useState(null);
@@ -281,6 +283,26 @@ export default function App() {
       );
     }
 
+    if (showPoliceHelp && screen === SCREEN.MAIN) {
+      return (
+        <div
+          id="app-viewport"
+          style={{
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            paddingTop: '48px', // Fixed Notch overlap spacing
+          }}
+        >
+          <div className="screen-content">
+            <PoliceHelp
+              onBack={() => setShowPoliceHelp(false)}
+            />
+          </div>
+        </div>
+      );
+    }
+
     if (showSettings && screen === SCREEN.MAIN) {
       return (
         <div id="app-viewport" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -434,6 +456,7 @@ export default function App() {
             onOpenSettings={() => setShowSettings(true)}
             onOpenBudget={() => setShowBudget(true)}
             onOpenOfflineMaps={() => setShowOfflineMaps(true)}
+            onOpenPoliceHelp={() => setShowPoliceHelp(true)}
             onLogout={handleLogout}
           />
         );

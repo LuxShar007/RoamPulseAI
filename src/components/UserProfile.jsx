@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Settings, PiggyBank, Download, ChevronRight, LogOut } from 'lucide-react';
+import { Settings, PiggyBank, Download, ChevronRight, LogOut, Siren } from 'lucide-react';
 
-export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpenOfflineMaps, onLogout }) {
+export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpenOfflineMaps, onOpenPoliceHelp, onLogout }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   return (
-    <div style={{ padding: '44px 20px 20px 20px', background: 'var(--bg-dark)', minHeight: '100%' }}>
+    <div style={{ padding: '44px 20px 20px 20px', background: 'var(--bg-dark)', minHeight: '100%', position: 'relative' }}>
+      {/* Profile Header */}
       <div className="glass-card" style={{ padding: '20px', marginBottom: '24px', textAlign: 'center' }}>
         <img
           src={user.avatar}
@@ -29,7 +30,9 @@ export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpen
         </div>
       </div>
 
+      {/* Menu Cards Wrapper */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+        {/* AI Budget Optimizer */}
         <div
           onClick={onOpenBudget}
           className="glass-card"
@@ -45,6 +48,7 @@ export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpen
           <ChevronRight size={18} color="var(--text-muted)" />
         </div>
 
+        {/* Offline Maps Manager */}
         <div
           onClick={onOpenOfflineMaps}
           className="glass-card"
@@ -60,6 +64,7 @@ export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpen
           <ChevronRight size={18} color="var(--text-muted)" />
         </div>
 
+        {/* Settings & Preferences */}
         <div
           onClick={onOpenSettings}
           className="glass-card"
@@ -74,8 +79,35 @@ export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpen
           </div>
           <ChevronRight size={18} color="var(--text-muted)" />
         </div>
+
+        {/* Police Assistance */}
+        <div
+          className="glass-card glass-card--emergency"
+          onClick={onOpenPoliceHelp}
+          style={{
+            padding: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justify: 'space-between',
+            cursor: 'pointer'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <Siren size={22} color="#EF4444" />
+            <div>
+              <div style={{ fontWeight: '800', fontSize: '15px', color: 'var(--text-primary)' }}>
+                Police Assistance
+              </div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                Find police stations or get emergency help
+              </div>
+            </div>
+          </div>
+          <ChevronRight size={18} color="var(--text-muted)" />
+        </div>
       </div>
 
+      {/* Log Out Button */}
       <button
         onClick={() => setShowLogoutConfirm(true)}
         style={{
@@ -89,7 +121,7 @@ export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpen
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justify: 'center',
           gap: '8px'
         }}
       >
@@ -97,17 +129,21 @@ export default function UserProfile({ user, onOpenSettings, onOpenBudget, onOpen
         <span>Log Out</span>
       </button>
 
+      {/* Logout Modal - Bound within mobile viewport */}
       {showLogoutConfirm && (
         <div style={{
-          position: 'fixed',
-          top: 0, left: 0, right: 0, bottom: 0,
+          position: 'absolute',
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0,
           background: 'rgba(6, 11, 18, 0.9)',
           backdropFilter: 'blur(10px)',
           zIndex: 300,
           padding: '24px',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justify: 'center'
         }}>
           <div className="glass-card" style={{ padding: '24px', textAlign: 'center', border: '1px solid #EF4444', width: '100%', maxWidth: '340px' }}>
             <h3 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '8px', color: 'var(--text-primary)' }}>Log Out of RoamPulse AI?</h3>

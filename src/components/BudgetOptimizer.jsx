@@ -1,8 +1,16 @@
 import React from 'react';
 import { PiggyBank, Sparkles } from 'lucide-react';
-import { formatPrice } from '../utils/currency';
+
+// Safe inline price formatter (no external import required)
+const safeFormatPrice = (amount, currency = 'INR') => {
+  if (amount === undefined || amount === null) return '₹0';
+  const symbols = { INR: '₹', USD: '$', EUR: '€', GBP: '£' };
+  const symbol = symbols[currency] || '₹';
+  return `${symbol}${Number(amount).toLocaleString('en-IN')}`;
+};
 
 export default function BudgetOptimizer({ savingsSummary, currency = 'INR' }) {
+  // Safe default summary if prop is undefined or null
   const summary = savingsSummary || {
     totalSaved: 1450,
     hotelSavings: 900,
@@ -13,6 +21,8 @@ export default function BudgetOptimizer({ savingsSummary, currency = 'INR' }) {
       { id: 3, title: 'Use Public Transport / Walking Routes', saveAmount: 200, badge: 'Easy' }
     ]
   };
+
+  const recommendations = summary.recommendations || [];
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -39,7 +49,7 @@ export default function BudgetOptimizer({ savingsSummary, currency = 'INR' }) {
           <div>
             <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>TOTAL SAVED SO FAR</div>
             <div style={{ fontSize: '24px', fontWeight: '800', color: '#22C55E' }}>
-              {formatPrice(summary.totalSaved, currency)}
+              {safeFormatPrice(summary.totalSaved ?? 0, currency)}
             </div>
           </div>
           <div style={{ borderLeft: '1px solid var(--border-subtle)', paddingLeft: '16px' }}>
@@ -54,7 +64,7 @@ export default function BudgetOptimizer({ savingsSummary, currency = 'INR' }) {
         <div className="glass-card" style={{ padding: '14px' }}>
           <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700' }}>STAYS SAVINGS</div>
           <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--accent-cyan)', margin: '4px 0' }}>
-            {formatPrice(summary.hotelSavings, currency)}
+            {safeFormatPrice(summary.hotelSavings ?? 0, currency)}
           </div>
           <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Vs average city hotel tariff</div>
         </div>
@@ -62,7 +72,7 @@ export default function BudgetOptimizer({ savingsSummary, currency = 'INR' }) {
         <div className="glass-card" style={{ padding: '14px' }}>
           <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700' }}>FOOD SAVINGS</div>
           <div style={{ fontSize: '18px', fontWeight: '800', color: '#22C55E', margin: '4px 0' }}>
-            {formatPrice(summary.foodSavings, currency)}
+            {safeFormatPrice(summary.foodSavings ?? 0, currency)}
           </div>
           <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Via LocoGems street food</div>
         </div>
@@ -76,12 +86,12 @@ export default function BudgetOptimizer({ savingsSummary, currency = 'INR' }) {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {summary.recommendations.map((rec) => (
+          {recommendations.map((rec) => (
             <div key={rec.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 12px', background: 'var(--bg-surface)', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
               <div>
                 <div style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{rec.title}</div>
                 <div style={{ fontSize: '11px', color: '#22C55E', fontWeight: '700', marginTop: '2px' }}>
-                  Save ~{formatPrice(rec.saveAmount, currency)}
+                  Save ~{safeFormatPrice(rec.saveAmount, currency)}
                 </div>
               </div>
               <span style={{ fontSize: '10px', color: 'var(--accent-cyan)', background: 'var(--border-subtle)', padding: '2px 8px', borderRadius: '6px', fontWeight: '800' }}>
