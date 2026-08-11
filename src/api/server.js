@@ -33,8 +33,8 @@ app.get('/api/health', (_req, res) => {
 // ─── LIVE WEATHER & AQI RADAR ENDPOINT ───────────────────────────────────────
 
 app.get('/api/weather', async (req, res) => {
-  const lat = Number(req.query.lat) || 19.033;
-  const lng = Number(req.query.lng) || 73.029;
+  const lat = Number(req.query.lat) || 28.6129;  // India Gate
+  const lng = Number(req.query.lng) || 77.2295;
   try {
     const data = await fetchLiveWeatherAndAQI(lat, lng);
     res.json({ success: true, data });
@@ -89,8 +89,8 @@ app.post('/api/db/reviews', (req, res) => {
 // ─── REAL-TIME LOCALITY API ENDPOINTS ──────────────────────────────────────────
 
 app.get('/api/live/locality', async (req, res) => {
-  const lat = Number(req.query.lat) || 19.033;
-  const lng = Number(req.query.lng) || 73.029;
+  const lat = Number(req.query.lat) || 18.9220;  // Gateway of India
+  const lng = Number(req.query.lng) || 72.8347;
   const radius = Number(req.query.radius) || 3500;
 
   try {
@@ -99,7 +99,7 @@ app.get('/api/live/locality', async (req, res) => {
     res.json({
       success: true,
       source: 'openstreetmap_nominatim_realtime',
-      locality: data?.locality || 'Navi Mumbai',
+      locality: data?.locality || 'Unknown Locality',
       lat,
       lng,
       data: {
@@ -117,8 +117,8 @@ app.get('/api/live/locality', async (req, res) => {
 });
 
 app.get('/api/live/stays', async (req, res) => {
-  const lat = Number(req.query.lat) || 19.033;
-  const lng = Number(req.query.lng) || 73.029;
+  const lat = Number(req.query.lat) || 18.9398;  // CST
+  const lng = Number(req.query.lng) || 72.8354;
   try {
     const stays = await fetchOSMRealtimeCategory(lat, lng, 'stays', 4000);
     res.json({ success: true, data: stays.length ? stays : mockData.stays });
@@ -128,8 +128,8 @@ app.get('/api/live/stays', async (req, res) => {
 });
 
 app.get('/api/live/locogems', async (req, res) => {
-  const lat = Number(req.query.lat) || 19.033;
-  const lng = Number(req.query.lng) || 73.029;
+  const lat = Number(req.query.lat) || 18.9398;
+  const lng = Number(req.query.lng) || 72.8354;
   try {
     const locogems = await fetchOSMRealtimeCategory(lat, lng, 'locogems', 3500);
     const dining = await fetchOSMRealtimeCategory(lat, lng, 'dining', 3500);
@@ -164,9 +164,9 @@ app.get('/api/google/place', async (req, res) => {
       data: {
         osmId: null,
         name: query,
-        formattedAddress: 'Navi Mumbai, India',
-        lat: 19.033,
-        lng: 73.029,
+        formattedAddress: 'India',
+        lat: 28.6129,
+        lng: 77.2295,
         googleRating: 4.5,
         openNow: true,
         photoUrl: null,

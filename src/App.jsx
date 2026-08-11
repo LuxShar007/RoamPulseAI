@@ -30,6 +30,7 @@ import ItineraryPlanner from './components/ItineraryPlanner';
 import BudgetAnalyticsView from './components/BudgetAnalyticsView';
 import IPhone17ProMaxFrame from './components/IPhone17ProMaxFrame';
 import ReviewPage from './components/ReviewPage';
+import LocationPicker from './components/LocationPicker';
 
 
 // Services & Data
@@ -59,8 +60,8 @@ export default function App() {
   const [theme, setTheme] = useState('emerald');
 
   // Real-Time Locality Data & Weather State
-  const [userPos, setUserPos] = useState([19.033, 73.029]);
-  const [localityName, setLocalityName] = useState('Navi Mumbai');
+  const [userPos, setUserPos] = useState(null);
+  const [localityName, setLocalityName] = useState('Detecting...');
   const [weatherData, setWeatherData] = useState(null);
   const [dbItineraries, setDbItineraries] = useState([]);
   const [liveData, setLiveData] = useState({
@@ -85,6 +86,7 @@ export default function App() {
   const [showNavPreview, setShowNavPreview] = useState(false);
   const [showItineraryModal, setShowItineraryModal] = useState(false);
   const [navTarget, setNavTarget] = useState(null);
+  const [showLocationPicker, setShowLocationPicker] = useState(false);
 
   // ─── Fetch SQLite DB Saved Itineraries ──────────────────────────────────
 
@@ -135,19 +137,45 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          setUserPos([lat, lng]);
-          fetchLiveLocality(lat, lng);
-        },
-        () => fetchLiveLocality(19.033, 73.029)
-      );
-    } else {
-      fetchLiveLocality(19.033, 73.029);
+    if (!navigator.geolocation) {
+      setLocalityName('Set Your Location');
+      setShowLocationPicker(true);
+      return;
     }
+
+    let hasFetchedOnce = false;
+    let bestAccuracy = Infinity;
+
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const accuracy = pos.coords.accuracy;
+        setUserPos([lat, lng]);
+
+        if (!hasFetchedOnce) {
+          hasFetchedOnce = true;
+          bestAccuracy = accuracy;
+          console.log(`[GPS] First fix: ${lat.toFixed(5)}, ${lng.toFixed(5)} (accuracy: ${Math.round(accuracy)}m)`);
+          fetchLiveLocality(lat, lng);
+        } else if (accuracy < bestAccuracy * 0.5 && accuracy < 2000) {
+          bestAccuracy = accuracy;
+          console.log(`[GPS] Better fix: ${lat.toFixed(5)}, ${lng.toFixed(5)} (accuracy: ${Math.round(accuracy)}m)`);
+          fetchLiveLocality(lat, lng);
+        }
+      },
+      (err) => {
+        console.warn('[GPS] Geolocation error:', err.message);
+        if (!hasFetchedOnce) {
+          hasFetchedOnce = true;
+          setLocalityName('Set Your Location');
+          setShowLocationPicker(true);
+        }
+      },
+      { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
   const handleSelectSearchedLocality = async (queryText) => {
@@ -166,6 +194,13 @@ export default function App() {
     } catch (err) {
       console.error('Locality resolution error:', err);
     }
+  };
+
+  // ─── Handle Setting Location from LocationPicker ────────────────────────
+  const handleSetLocation = (name, lat, lng) => {
+    setLocalityName(name);
+    setUserPos([lat, lng]);
+    fetchLiveLocality(lat, lng);
   };
 
   // SQLite Persistence Save Handlers
@@ -340,6 +375,7 @@ export default function App() {
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               onOpenSearch={() => setShowSearch(true)}
+              onLocationTap={() => setShowLocationPicker(true)}
               onOpenNotifications={() => setShowNotifications(true)}
               onOpenFilter={() => setShowFilter(true)}
               unreadNotifsCount={3}
@@ -496,6 +532,14 @@ export default function App() {
             recentSearches={mockData.recentSearches}
             onClose={() => setShowSearch(false)}
             onSelectQuery={handleSelectSearchedLocality}
+          />
+        )}
+
+        {showLocationPicker && (
+          <LocationPicker
+            currentLocation={localityName}
+            onSetLocation={handleSetLocation}
+            onClose={() => setShowLocationPicker(false)}
           />
         )}
 

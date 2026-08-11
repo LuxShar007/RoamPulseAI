@@ -48,7 +48,7 @@ const USER_ICON     = L.divIcon({
   className: ''
 });
 
-const DEFAULT_CENTER = [19.033, 73.029];
+const DEFAULT_CENTER = [28.6129, 77.2295]; // India Gate, New Delhi
 const DARK_TILE_URL = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 const DARK_TILE_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>';
 

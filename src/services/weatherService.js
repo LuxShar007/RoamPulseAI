@@ -24,7 +24,7 @@ function getAqiRating(usAqi) {
   return { score: usAqi || 42, rating: 'Good', color: '#22C55E', note: 'Fresh Air Radar' };
 }
 
-export async function fetchLiveWeatherAndAQI(lat = 19.033, lng = 73.029) {
+export async function fetchLiveWeatherAndAQI(lat = 28.6129, lng = 77.2295) {
   try {
     const [weatherRes, aqiRes] = await Promise.all([
       axios.get(WEATHER_API_BASE, {

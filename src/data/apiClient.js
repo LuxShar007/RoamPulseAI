@@ -4,7 +4,7 @@ const API_BASE_URL = '/api';
 
 export const apiClient = {
   // ── Real-Time Locality Data (OpenStreetMap Overpass) ────────────────────────
-  async getLiveLocalityData(lat = 19.033, lng = 73.029) {
+  async getLiveLocalityData(lat, lng) {
     try {
       const res = await fetch(`${API_BASE_URL}/live/locality?lat=${lat}&lng=${lng}`);
       if (!res.ok) throw new Error('Locality API error');

@@ -34,7 +34,7 @@ const USER_NAV_ICON = L.divIcon({
 
 const DESTINATION_ICON = makeDivIcon('📍', '#EF4444', 'rgba(239,68,68,0.8)');
 
-export default function LiveNavigationModal({ target, userPos = [19.033, 73.029], onClose }) {
+export default function LiveNavigationModal({ target, userPos = [18.9220, 72.8347], onClose }) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const routePolylineRef = useRef(null);
@@ -160,7 +160,7 @@ export default function LiveNavigationModal({ target, userPos = [19.033, 73.029]
   const currentStep = steps[stepIndex] || steps[0];
 
   const handleOpenGoogleMaps = () => {
-    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}&travelmode=driving`;
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLng}&destination=${destLat},${destLng}&travelmode=driving`;
     window.open(mapsUrl, '_blank');
   };
 

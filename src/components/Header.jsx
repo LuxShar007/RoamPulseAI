@@ -7,6 +7,7 @@ export default function Header({
   onOpenSearch,
   onOpenNotifications,
   onOpenFilter,
+  onLocationTap,
   unreadNotifsCount = 3,
   weatherData
 }) {
@@ -18,7 +19,11 @@ export default function Header({
   return (
     <div style={{ padding: '44px 20px 8px 20px', background: 'var(--bg-dark)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div
+          onClick={onLocationTap}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+          title="Tap to change your location"
+        >
           <div style={{
             width: '32px',
             height: '32px',
@@ -32,9 +37,18 @@ export default function Header({
             <MapPin size={16} />
           </div>
           <div>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Current Locality</div>
-            <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Your Location</div>
+            <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span>{location}</span>
+              <span style={{
+                fontSize: '9px',
+                color: 'var(--accent-cyan)',
+                fontWeight: '700',
+                background: 'rgba(0,242,254,0.1)',
+                padding: '2px 6px',
+                borderRadius: '6px',
+                letterSpacing: '0.3px'
+              }}>CHANGE</span>
             </div>
           </div>
         </div>

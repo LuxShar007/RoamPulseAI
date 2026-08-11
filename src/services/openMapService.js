@@ -109,16 +109,18 @@ export async function reverseGeocodeLocality(lat, lng) {
         lat,
         lon: lng,
         format: 'json',
-        addressdetails: 1
+        addressdetails: 1,
+        zoom: 12
       },
       timeout: 4000
     });
 
     const addr = res.data?.address || {};
-    const locality = addr.suburb || addr.neighbourhood || addr.city_district || addr.city || addr.town || addr.county || 'Navi Mumbai';
+    const locality = addr.city || addr.town || addr.village || addr.city_district ||
+                     addr.suburb || addr.county || 'Unknown Locality';
     return locality;
   } catch {
-    return 'Navi Mumbai';
+    return 'Unknown Locality';
   }
 }
 
@@ -126,6 +128,14 @@ export async function reverseGeocodeLocality(lat, lng) {
 
 export async function fetchCategoryRealtime(queryTerm, category, centerLat, centerLng) {
   try {
+    const OFFSET = 0.09;
+    const viewbox = [
+      centerLng - OFFSET,
+      centerLat + OFFSET,
+      centerLng + OFFSET,
+      centerLat - OFFSET
+    ].join(',');
+
     const res = await axios.get(`${NOMINATIM_BASE}/search`, {
       headers: HEADERS,
       params: {
@@ -133,12 +143,30 @@ export async function fetchCategoryRealtime(queryTerm, category, centerLat, cent
         format: 'json',
         limit: 8,
         addressdetails: 1,
-        extratags: 1
+        extratags: 1,
+        viewbox,
+        bounded: 1
       },
       timeout: 5000
     });
 
-    const results = res.data || [];
+    let results = res.data || [];
+
+    if (!results.length) {
+      const fallbackRes = await axios.get(`${NOMINATIM_BASE}/search`, {
+        headers: HEADERS,
+        params: {
+          q: queryTerm,
+          format: 'json',
+          limit: 8,
+          addressdetails: 1,
+          extratags: 1
+        },
+        timeout: 5000
+      });
+      results = fallbackRes.data || [];
+    }
+
     if (!results.length) return [];
 
     return results.map((item, idx) => {
@@ -177,7 +205,7 @@ export async function fetchCategoryRealtime(queryTerm, category, centerLat, cent
 
 // ─── 4. Fetch All Locality Real-Time Data ───────────────────────────────────
 
-export async function fetchAllLocalityData(lat = 19.033, lng = 73.029) {
+export async function fetchAllLocalityData(lat = 18.9220, lng = 72.8347) {
   try {
     const locality = await reverseGeocodeLocality(lat, lng);
 
