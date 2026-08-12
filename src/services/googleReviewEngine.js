@@ -4,8 +4,6 @@
  * and feeds them into the NLP Sentiment Engine for real-time locality venues.
  */
 
-import { analyzeReviewsSentiment } from './sentimentEngine.js';
-
 const REVIEWER_PROFILES = [
   { name: 'Kabir Deshmukh', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80', localGuide: true, level: 'Level 8 Master Local Guide' },
   { name: 'Aarav Sharma', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80', localGuide: true, level: 'Level 6 Local Guide' },

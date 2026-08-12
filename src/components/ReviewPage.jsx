@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Star, MessageSquare, CheckCircle2, ShieldCheck, Sparkles, AlertCircle, ThumbsUp, Send, User } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Star, MessageSquare, CheckCircle2, ShieldCheck, Sparkles, AlertCircle, Send } from 'lucide-react';
 
 export default function ReviewPage({ localityName = 'Navi Mumbai', onSubmitSuccess }) {
   // Form State
@@ -31,7 +31,7 @@ export default function ReviewPage({ localityName = 'Navi Mumbai', onSubmitSucce
     5: '5.0 - Exceptional & Outstanding'
   };
 
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     setLoadingReviews(true);
     try {
       const res = await fetch('/api/db/reviews');
@@ -70,11 +70,11 @@ export default function ReviewPage({ localityName = 'Navi Mumbai', onSubmitSucce
     } finally {
       setLoadingReviews(false);
     }
-  };
+  }, [localityName]);
 
   useEffect(() => {
     fetchReviews();
-  }, []);
+  }, [fetchReviews]);
 
   const handleCategoryChange = (key, value) => {
     setCategoryRatings(prev => ({ ...prev, [key]: value }));

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { LocateFixed, Radio, Zap, ChevronRight } from 'lucide-react';
+import { LocateFixed, ChevronRight } from 'lucide-react';
 import PinBottomSheet from './PinBottomSheet';
-import { mockData } from '../data/mockData.js';
 import { useFramePacing } from '../utils/frameScheduler.js';
 
 
@@ -61,7 +60,6 @@ export default function RadarMap({ medicalHubs, washrooms, policeStations, stays
 
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedPin, setSelectedPin] = useState(null);
-  const [sweepAngle, setSweepAngle] = useState(0);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeftState, setScrollLeftState] = useState(0);
@@ -86,11 +84,8 @@ export default function RadarMap({ medicalHubs, washrooms, policeStations, stays
     filterScrollRef.current.scrollLeft = scrollLeftState - walk;
   };
 
-  // 240Hz Frame Scheduler integration for smooth radar sweep rotation
-  const frameStats = useFramePacing((frameState) => {
-    // Advance sweep angle based on dtRatio for frame-rate independent rotation
-    setSweepAngle((prev) => (prev + 1.2 * frameState.dtRatio) % 360);
-  });
+  // 240Hz Frame Scheduler integration for smooth radar animation
+  useFramePacing();
 
 
   // Initialise Leaflet Map

@@ -3,7 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import { mockData } from '../data/mockData.js';
 import { dbService } from '../services/dbService.js';
-import { analyzeReviewsSentiment } from '../services/sentimentEngine.js';
 import { generateGoogleReviews } from '../services/googleReviewEngine.js';
 import { fetchLiveWeatherAndAQI } from '../services/weatherService.js';
 import {
