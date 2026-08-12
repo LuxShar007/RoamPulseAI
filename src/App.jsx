@@ -49,11 +49,6 @@ export default function App() {
   const [screen, setScreen] = useState(SCREEN.SPLASH);
   const [activeTab, setActiveTab] = useState('home');
   const [activeCategory, setActiveCategory] = useState('all');
-  const [showMobileCompatNotice] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    const userAgent = navigator.userAgent || '';
-    return /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(userAgent);
-  });
   const [searchQuery, setSearchQuery] = useState('');
   const [currency, setCurrency] = useState('INR');
   const [theme, setTheme] = useState('emerald');
@@ -702,15 +697,6 @@ export default function App() {
   return (
     <IPhone17ProMaxFrame currentTheme={theme} onSelectTheme={setTheme}>
       <div className="app-shell">
-        {showMobileCompatNotice && (
-          <div className="mobile-compat-banner" role="status" aria-live="polite">
-            <div className="mobile-compat-banner__icon">📱</div>
-            <div className="mobile-compat-banner__text">
-              <strong>For the best experience, use Desktop mode</strong>
-              <p>On Chrome for Android or iPhone, tap the menu and enable Desktop site / Request desktop site.</p>
-            </div>
-          </div>
-        )}
         {renderAppView()}
       </div>
     </IPhone17ProMaxFrame>

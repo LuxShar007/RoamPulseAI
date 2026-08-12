@@ -81,11 +81,27 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
   const [deviceFinish, setDeviceFinish] = useState('titanium');
   const [isDynamicIslandExpanded, setIsDynamicIslandExpanded] = useState(false);
   const [showGuideModal, setShowGuideModal] = useState(false);
+  
+  // Viewport mode: 'native' for standalone 100% full-screen mobile app, 'frame' for desktop mockup chassis
+  const [isMobileDevice, setIsMobileDevice] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth <= 900 || /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent || '');
+  });
+  const [userViewMode, setUserViewMode] = useState('auto'); // 'auto', 'native', 'frame'
 
   // 240Hz Dynamic Frame Pacing Telemetry
   useFramePacing();
 
   const figmaDesignUrl = "https://www.figma.com/design/8RbDA2X0xEqG5NJW0pQf11/RoamPulseAI?node-id=0-1&t=w7L1KqsOf1UQdOH9-1";
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth <= 900 || /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent || '');
+      setIsMobileDevice(isMobile);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const updateTime = () => {
@@ -98,6 +114,8 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
     const interval = setInterval(updateTime, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  const effectiveMode = userViewMode === 'native' ? 'native' : (userViewMode === 'frame' ? 'frame' : (isMobileDevice ? 'native' : 'frame'));
 
   const finishColors = {
     titanium: { name: 'Titanium', bezel: '#232E2D', shadow: 'rgba(0, 229, 192, 0.35)', accent: '#00E5C0' },
@@ -120,6 +138,60 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
   const currentThemeObj = themes.find(t => t.id === currentTheme) || themes[0];
   const isLightTheme = currentTheme === 'light-minimal' || currentTheme === 'light-rose';
   const iconColor = isLightTheme ? 'var(--text-primary)' : '#FFFFFF';
+
+  if (effectiveMode === 'native') {
+    return (
+      <div
+        data-theme={currentTheme || 'emerald'}
+        className="standalone-mobile-app-root"
+        style={{
+          width: '100vw',
+          height: '100svh',
+          minHeight: '-webkit-fill-available',
+          background: 'var(--bg-dark)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          position: 'relative'
+        }}
+      >
+        {!isMobileDevice && (
+          <div style={{
+            position: 'fixed',
+            top: '12px',
+            right: '16px',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <button
+              onClick={() => setUserViewMode('frame')}
+              className="studio-pill-btn"
+              style={{
+                padding: '8px 14px',
+                borderRadius: '16px',
+                background: 'rgba(10, 16, 26, 0.92)',
+                border: '1px solid var(--accent-cyan)',
+                color: '#FFFFFF',
+                fontSize: '11px',
+                fontWeight: '800',
+                cursor: 'pointer',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.6)',
+                backdropFilter: 'blur(12px)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              <span>💻 Switch to iPhone Frame Chassis</span>
+            </button>
+          </div>
+        )}
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -240,6 +312,29 @@ export default function IPhone17ProMaxFrame({ children, currentTheme, onSelectTh
               />
             ))}
           </div>
+
+          {/* Viewport Mode Switcher */}
+          <button
+            onClick={() => setUserViewMode('native')}
+            className="studio-pill-btn"
+            title="Switch to standalone 100% full-screen mobile app UI"
+            style={{
+              padding: '6px 14px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, rgba(0, 229, 192, 0.2) 0%, rgba(0, 242, 254, 0.2) 100%)',
+              border: '1px solid var(--accent-cyan)',
+              color: '#FFFFFF',
+              fontSize: '11px',
+              fontWeight: '800',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <span>📱 Fullscreen Native Mobile View</span>
+          </button>
 
           {/* Figma Prototype Link */}
           <a
